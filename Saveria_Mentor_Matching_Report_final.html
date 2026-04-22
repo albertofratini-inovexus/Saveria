@@ -1,0 +1,1293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Saveria — Mentor Matching Report | Inovexus</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+<style>
+
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;line-height:1.6;color:#1a1a2e;background:#f0f4f8}
+.container{max-width:1440px;margin:0 auto;background:#fff;box-shadow:0 0 40px rgba(0,0,0,0.12)}
+
+/* HEADER */
+header{background:linear-gradient(135deg,#0f1b2d 0%,#0d2b4e 50%,#1a3a6b 100%);color:#fff;padding:3rem 2.5rem;position:relative;overflow:hidden}
+header::before{content:'';position:absolute;top:-60px;right:-60px;width:300px;height:300px;border-radius:50%;background:rgba(41,182,246,0.1);pointer-events:none}
+header::after{content:'';position:absolute;bottom:-80px;left:-40px;width:250px;height:250px;border-radius:50%;background:rgba(21,87,153,0.18);pointer-events:none}
+.header-inner{position:relative;z-index:1}
+.header-badge{display:inline-block;background:rgba(41,182,246,0.2);border:1px solid rgba(41,182,246,0.5);color:#7ed6ff;font-size:0.78rem;font-weight:700;letter-spacing:2px;padding:4px 14px;border-radius:20px;margin-bottom:1rem;text-transform:uppercase}
+header h1{font-size:2.8rem;font-weight:300;letter-spacing:-0.5px;margin-bottom:0.3rem}
+header h1 strong{font-weight:700;color:#29b6f6}
+.header-sub{font-size:1.15rem;opacity:0.85;margin-bottom:1.5rem}
+.header-meta{display:flex;gap:2.5rem;font-size:0.88rem;opacity:0.75;border-top:1px solid rgba(255,255,255,0.15);padding-top:1rem;flex-wrap:wrap}
+.header-meta span{display:flex;align-items:center;gap:6px}
+
+/* NAV */
+.sticky-nav{position:sticky;top:0;z-index:100;background:linear-gradient(135deg,#0f1b2d,#1a3a6b);display:flex;gap:0;border-bottom:2px solid rgba(41,182,246,0.3);overflow-x:auto}
+.nav-link{padding:0.8rem 1.5rem;color:rgba(255,255,255,0.8);text-decoration:none;font-size:0.82rem;font-weight:600;letter-spacing:0.5px;text-transform:uppercase;border-right:1px solid rgba(255,255,255,0.1);transition:all 0.2s;white-space:nowrap}
+.nav-link:hover{background:rgba(41,182,246,0.15);color:#29b6f6}
+
+/* KPI BAR */
+.kpi-bar{display:grid;grid-template-columns:repeat(4,1fr);gap:0;background:linear-gradient(135deg,#0f1b2d,#1a3a6b)}
+.kpi-btn{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1.8rem 1rem;text-decoration:none;color:#fff;border-right:1px solid rgba(255,255,255,0.1);transition:all 0.3s;cursor:pointer;background:transparent;border-top:none;border-bottom:none;border-left:none;font-family:inherit}
+.kpi-btn:last-child{border-right:none}
+.kpi-btn:hover{background:rgba(41,182,246,0.15)}
+.kpi-num{font-size:2.6rem;font-weight:700;color:#29b6f6;line-height:1}
+.kpi-label{font-size:0.8rem;opacity:0.8;margin-top:0.3rem;text-transform:uppercase;letter-spacing:1px;text-align:center}
+.kpi-sub{font-size:0.72rem;opacity:0.55;margin-top:2px}
+
+/* SECTIONS */
+.section{padding:2.5rem}
+.section-alt{background:#f8fafc}
+.section-header{display:flex;align-items:center;gap:12px;margin-bottom:1.5rem}
+.section-icon{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0}
+.icon-blue{background:linear-gradient(135deg,#0f1b2d,#1a3a6b)}
+.icon-teal{background:linear-gradient(135deg,#0277bd,#0288d1)}
+.icon-green{background:linear-gradient(135deg,#1e7e44,#145c30)}
+.icon-orange{background:linear-gradient(135deg,#e07b25,#a8591a)}
+.section-title{font-size:1.4rem;font-weight:700;color:#0f1b2d}
+.section-subtitle{font-size:0.85rem;color:#64748b;margin-top:1px}
+
+/* STARTUP PROFILE */
+.profile-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem}
+.profile-card{background:#fff;border-radius:10px;padding:1.2rem;border:1px solid #e1e8f0;border-left:4px solid #1a3a6b}
+.profile-card h4{font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#64748b;margin-bottom:0.5rem}
+.profile-card p{font-size:0.9rem;color:#1a1a2e;line-height:1.5}
+.bottleneck-list{list-style:none;display:flex;flex-direction:column;gap:6px}
+.bottleneck-list li{display:flex;align-items:flex-start;gap:8px;font-size:0.88rem;color:#1a1a2e}
+.bottleneck-list li::before{content:'→';color:#e83e8c;font-weight:700;flex-shrink:0;margin-top:1px}
+
+/* MENTORING AREAS */
+.mentoring-row{background:#fff;border:1px solid #e1e8f0;border-radius:12px;padding:1.5rem;margin-bottom:1rem;display:flex;gap:1.5rem;align-items:flex-start}
+.mentoring-area-badge{padding:6px 14px;border-radius:20px;font-size:0.8rem;font-weight:700;white-space:nowrap;flex-shrink:0;margin-top:2px}
+.mentoring-content{flex:1}
+.mentoring-obj{font-size:0.9rem;color:#0f1b2d;font-weight:600;margin-bottom:8px}
+.mentoring-kpi{font-size:0.85rem;color:#334155;margin-bottom:8px;display:flex;align-items:flex-start;gap:6px;flex-wrap:wrap}
+.mentoring-rationale{font-size:0.82rem;color:#64748b;line-height:1.55;border-left:3px solid #e1e8f0;padding-left:10px}
+
+/* CONFIDENCE BANNER */
+.confidence-banner{background:linear-gradient(135deg,#0f1b2d,#1a3a6b);color:#fff;padding:1.8rem 2.5rem;display:flex;align-items:center;justify-content:space-between;gap:2rem;flex-wrap:wrap}
+.conf-left h3{font-size:1.1rem;font-weight:600;margin-bottom:4px}
+.conf-left p{font-size:0.85rem;opacity:0.75;max-width:600px;line-height:1.5}
+.conf-score-block{text-align:center;flex-shrink:0}
+.conf-score-num{font-size:4rem;font-weight:700;color:#29b6f6;line-height:1}
+.conf-score-label{font-size:0.8rem;opacity:0.7;text-transform:uppercase;letter-spacing:1px}
+.conf-score-sub{font-size:0.75rem;opacity:0.6;margin-top:4px}
+
+/* MENTOR GRID */
+.mentor-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1.5rem}
+.mentor-card{border-radius:12px;overflow:hidden;border:1px solid #e1e8f0;background:#fff;transition:all 0.3s;box-shadow:0 2px 8px rgba(0,0,0,0.06)}
+.mentor-card:hover{transform:translateY(-4px);box-shadow:0 8px 24px rgba(0,0,0,0.13)}
+.mentor-card.top{border-top:4px solid #29b6f6}
+.mentor-card.qualified{border-top:4px solid #1a3a6b}
+.mentor-header-row{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;padding:1.2rem 1.2rem 0.8rem}
+.mentor-rank{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.8rem;font-weight:700;color:#fff;flex-shrink:0;margin-top:2px}
+.rank-top{background:linear-gradient(135deg,#0288d1,#0277bd)}
+.rank-qual{background:linear-gradient(135deg,#1a3a6b,#0f1b2d)}
+.mentor-name-block{flex:1}
+.mentor-name{font-size:1.05rem;font-weight:700;color:#0f1b2d;margin-bottom:3px}
+.mentor-tier-badge{display:inline-block;font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;padding:2px 10px;border-radius:10px}
+.badge-top{background:#e1f5fe;color:#0277bd}
+.badge-qual{background:#dce8f0;color:#1a3a6b}
+.mentor-location{font-size:0.8rem;color:#64748b;margin-top:4px;display:flex;align-items:center;gap:4px}
+.score-block{text-align:center;flex-shrink:0}
+.dmf-score{font-size:2rem;font-weight:700;line-height:1}
+.dmf-label{font-size:0.65rem;text-transform:uppercase;letter-spacing:1px;color:#94a3b8}
+.score-bar-wrap{width:60px;margin:4px auto 0}
+.score-bar-bg{background:#e1e8f0;border-radius:4px;height:4px}
+.score-bar-fill{height:100%;border-radius:4px}
+.mentor-rationale{background:#f8fafc;border-left:3px solid #29b6f6;margin:0 1.2rem 1rem;padding:0.7rem 1rem;border-radius:0 8px 8px 0;font-size:0.85rem;color:#334155;line-height:1.55}
+.tags-area{padding:0 1.2rem 1.2rem;display:flex;flex-direction:column;gap:0.5rem}
+.tag-row{display:flex;align-items:flex-start;gap:6px;flex-wrap:wrap}
+.tag-row-label{font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:#94a3b8;white-space:nowrap;padding-top:3px;min-width:70px}
+.tag{display:inline-block;font-size:0.72rem;padding:2px 9px;border-radius:10px;font-weight:600}
+.tag-sector{background:#e1f5fe;color:#0277bd}
+.tag-skill{background:#f0f9f0;color:#1e7e44}
+.tag-geo{background:#fff8e1;color:#a8591a}
+.linkedin-link{display:block;padding:0.75rem 1.2rem;background:#f8fafc;color:#0288d1;text-decoration:none;font-size:0.8rem;font-weight:600;border-top:1px solid #e1e8f0;transition:background 0.2s}
+.linkedin-link:hover{background:#e1f5fe}
+
+/* DASHBOARD */
+.dashboard-section{padding:2.5rem;background:#f8fafc;border-top:3px solid #e1e8f0}
+.charts-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-bottom:1.5rem}
+.chart-card{background:#fff;border-radius:12px;padding:1.5rem;border:1px solid #e1e8f0;box-shadow:0 2px 8px rgba(0,0,0,0.04)}
+.chart-title{font-size:0.9rem;font-weight:700;color:#0f1b2d;margin-bottom:1rem;padding-bottom:8px;border-bottom:2px solid #e1f5fe}
+.chart-wide{grid-column:span 3}
+canvas{max-height:240px}
+
+/* FOOTER */
+footer{background:#0f1b2d;color:rgba(255,255,255,0.6);padding:2rem 2.5rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:gap}
+footer .footer-brand{font-size:1.1rem;font-weight:700;color:#29b6f6}
+footer .footer-info{font-size:0.8rem}
+
+@media(max-width:900px){
+  .profile-grid,.mentor-grid,.charts-grid{grid-template-columns:1fr}
+  .chart-wide{grid-column:span 1}
+  .kpi-bar{grid-template-columns:repeat(2,1fr)}
+  header h1{font-size:2rem}
+}
+
+</style>
+</head>
+<body>
+<div class="container">
+
+<!-- HEADER -->
+<header>
+  <div class="header-inner">
+    <div class="header-badge">Inovexus · Mentor Matching · AI Analysis</div>
+    <h1>Saveria — <strong>Mentor Matching Report</strong></h1>
+    <div class="header-sub">AI-powered mentor selection from 470+ Inovexus mentor profiles · Pre-Seed Cohort 2026</div>
+    <div class="header-meta">
+      <span>📅 April 21, 2026</span>
+      <span>💼 FinTech / AccountingTech / B2B SaaS</span>
+      <span>🇫🇷 France → 🇩🇪 Germany</span>
+      <span>🎯 Pre-Seed · €600k BSA + €1.5M total round</span>
+      <span>👤 Analysis: Inovexus Investment Committee</span>
+    </div>
+  </div>
+</header>
+
+<!-- STICKY NAV -->
+<nav class="sticky-nav">
+  <a href="#profile" class="nav-link">🏢 Startup Profile</a>
+  <a href="#mentoring-areas" class="nav-link">🎯 Mentoring Areas & KPIs</a>
+  <a href="#top-mentors" class="nav-link">⭐ Top Mentors</a>
+  <a href="#qualified-mentors" class="nav-link">✅ Qualified Mentors</a>
+  <a href="#dashboard" class="nav-link">📊 Dashboard</a>
+</nav>
+
+<!-- KPI BUTTONS -->
+<div class="kpi-bar">
+  <button class="kpi-btn" onclick="document.getElementById('top-mentors').scrollIntoView({behavior:'smooth'})">
+    <div class="kpi-num">13</div>
+    <div class="kpi-label">Top Mentors</div>
+    <div class="kpi-sub">DMF Score ≥ 8.5</div>
+  </button>
+  <button class="kpi-btn" onclick="document.getElementById('qualified-mentors').scrollIntoView({behavior:'smooth'})">
+    <div class="kpi-num">18</div>
+    <div class="kpi-label">Qualified Mentors</div>
+    <div class="kpi-sub">DMF Score 7.0–8.4</div>
+  </button>
+  <button class="kpi-btn" onclick="document.getElementById('dashboard').scrollIntoView({behavior:'smooth'})">
+    <div class="kpi-num">6.6%</div>
+    <div class="kpi-label">Match Rate</div>
+    <div class="kpi-sub">31 of 470+ mentors</div>
+  </button>
+  <button class="kpi-btn" onclick="document.getElementById('dashboard').scrollIntoView({behavior:'smooth'})">
+    <div class="kpi-num">78</div>
+    <div class="kpi-label">Global Confidence</div>
+    <div class="kpi-sub">Score out of 100</div>
+  </button>
+</div>
+
+<!-- GLOBAL CONFIDENCE BANNER -->
+<div class="confidence-banner">
+  <div class="conf-left">
+    <h3>Global Mentor Confidence Score</h3>
+    <p>Reflects the depth of sector coverage (FinTech / AccountingTech / B2B SaaS for SMBs), functional skill alignment against Saveria's 5 mentoring bottlenecks (pricing, GTM, international scaling, partnerships, product prioritization), diversity of profiles, and overall readiness of the mentor base. A score of 78/100 indicates solid coverage with strong French fintech leadership depth, a Cegid-ecosystem mentor, and targeted DACH expansion options — comparable to the Nerva benchmark and slightly above Blumana. Thinner pure "expert-comptable" operator depth is the primary gap.</p>
+  </div>
+  <div class="conf-score-block">
+    <div class="conf-score-num">78</div>
+    <div class="conf-score-label">/ 100</div>
+    <div class="conf-score-sub">= 7.8 / 10 normalized</div>
+  </div>
+</div>
+
+<!-- STARTUP PROFILE -->
+<section id="profile" class="section section-alt">
+  <div class="section-header">
+    <div class="section-icon icon-blue">🏢</div>
+    <div><div class="section-title">Startup Profile — Saveria</div><div class="section-subtitle">Ground truth for mentor matching · Extracted from deal memo, pitch deck, and Philippe + Jens notetakers</div></div>
+  </div>
+  <div class="profile-grid">
+    <div class="profile-card"><h4>Sector &amp; Stage</h4><p>FinTech / AccountingTech / Vertical B2B SaaS · <strong>Pre-Seed</strong></p></div>
+    <div class="profile-card"><h4>Geography</h4><p>France (primary) → Germany via DATEV (second market) → EU</p></div>
+    <div class="profile-card"><h4>Business Model</h4><p>Two-sided B2B SaaS: per-seat to accounting firms (€25/seat paid beta launching mid-May) + per-client-file pricing (€6→€3 at volume). 50% discount locked in for 2 years for early adopters.</p></div>
+    <div class="profile-card"><h4>Problem</h4><p>Accounting firms operate across fragmented tools (banking, e-invoicing, payroll, DMS) with no intelligence layer. Structural shortage: ~21,000 accountants for 3.5M French SMBs — 50% of SMBs have no accountant; the rest receive minimal proactive advisory.</p></div>
+    <div class="profile-card"><h4>Solution &amp; Evidence</h4><p>AI-powered intelligence layer connecting to the full accounting stack. Human-in-the-loop by design: certified accountants validate every recommendation, keeping compliance with French fiscal regulation. Alpha launching imminently (free search/recommendation); paid beta mid-May 2026.</p></div>
+    <div class="profile-card"><h4>Target Customer</h4><p>B2B: accounting firms (experts-comptables) — 6 design partners signed, strong inbound pipeline. Indirect: SMBs via their accountants.</p></div>
+    <div class="profile-card"><h4>Traction</h4><p>Advanced prototype + 6 design partner firms co-constructing the product. Qonto integration pipeline (~25% of new French company creators). Pre-revenue — verbal &amp; email commitments only; no LOIs yet.</p></div>
+    <div class="profile-card" style="grid-column:span 2"><h4>Team</h4><p>Arthur Bouhanna (CEO, ex-Qonto Head of Paid Acquisition: scaled acquisition from 5k to 650k SMBs across Europe, 8 years) · Benjamin Corsini (COO, ex-Wino co-founder &amp; CRO, acquired by ISAGRI, 25% market share) · Antoine Moreaux (CTO, ex-Specify co-founder &amp; CTO, raised €5M, scaled to Carrefour &amp; Epic Games)</p></div>
+  </div>
+  <div style="margin-top:1.5rem">
+    <div class="section-header" style="margin-bottom:0.8rem">
+      <div><div class="section-title" style="font-size:1.1rem">Key Bottlenecks for Mentoring</div><div class="section-subtitle">Identified from Jens notetaker (primary source), Philippe call, and deal memo</div></div>
+    </div>
+    <ul class="bottleneck-list"><li>Pricing still untested — pre-revenue with no LOIs, only verbal commitments; paid beta launches mid-May at €25/seat with 50% discount; risk of mispricing or leaving money on the table</li>
+<li>Germany expansion scheduled as second market — DATEV integration required; entering pre-PMF in France is a sequencing risk</li>
+<li>Beta-to-paid conversion is the classic early-B2B failure mode — 6 design partners engaged but no paying customers yet</li>
+<li>Two distinct product use cases validated (upsell surfacing vs per-collaborator profitability) — roadmap prioritization not settled</li>
+<li>Crowded competitive landscape (Pennylane, Visma, DATEV, Spendesk, Finway, Moss) — "family doctor" narrative is a start but needs sharpening</li>
+<li>Business model risk — Antoine's prior startup Specify failed explicitly because "ils n'ont jamais trouvé un vrai business model, très géré par des gens qui ont du produit beaucoup plus que du business"</li>
+<li>GTM from zero — Arthur's acquisition experience is from a scaled Qonto, not a pre-seed cold start</li></ul>
+  </div>
+</section>
+
+<!-- MENTORING AREAS & KPIs -->
+<section id="mentoring-areas" class="section">
+  <div class="section-header">
+    <div class="section-icon icon-teal">🎯</div>
+    <div><div class="section-title">Mentoring Areas &amp; KPIs</div><div class="section-subtitle">5 selected areas · Directly tied to Saveria's bottlenecks · Trackable over 6-month program</div></div>
+  </div>
+
+  <div class="mentoring-row">
+    <div class="mentoring-area-badge" style="background:#e83e8c22;color:#e83e8c;border:1px solid #e83e8c44">Pricing Strategy</div>
+    <div class="mentoring-content">
+      <div class="mentoring-obj"><strong>Objective:</strong> Validate and iterate pricing architecture through the paid beta launch — test willingness-to-pay across firm sizes, optimize the per-seat + per-client-file structure, and avoid leaving money on the table</div>
+      <div class="mentoring-kpi"><span style="background:#e1f5fe;color:#0277bd;font-size:0.75rem;font-weight:700;padding:2px 10px;border-radius:10px;margin-right:8px">KPI</span>Average Contract Value (ACV) per accounting firm — target €3k+ ACV by month 6, with ≥2 packaging experiments completed</div>
+      <div class="mentoring-rationale"><strong>Explicit from Jens notetaker (Saveria sourcing notetakers, Apr 2026), point #1:</strong> "Saveria's pricing model is still untested in the market… pre-revenue with no LOIs — only verbal and email commitments from beta users. The paid beta launches mid-May at €25/seat, with a 50% discount locked in for 2 years for early adopters. There's a real risk of mispricing or leaving money on the table, especially as they bridge from free alpha to paid product in a matter of weeks."</div>
+    </div>
+  </div>
+
+  <div class="mentoring-row">
+    <div class="mentoring-area-badge" style="background:#6610f222;color:#6610f2;border:1px solid #6610f244">International Scaling</div>
+    <div class="mentoring-content">
+      <div class="mentoring-obj"><strong>Objective:</strong> Sequence the Germany entry properly (via DATEV integration) without breaking French PMF focus; de-risk the DACH accounting market complexity</div>
+      <div class="mentoring-kpi"><span style="background:#e1f5fe;color:#0277bd;font-size:0.75rem;font-weight:700;padding:2px 10px;border-radius:10px;margin-right:8px">KPI</span>Germany-readiness milestones: DATEV integration scoped + 5 qualified German firm conversations + 1 design partner by month 6</div>
+      <div class="mentoring-rationale"><strong>Explicit from Jens notetaker, point #2:</strong> "Germany is explicitly the planned second market after France, but it introduces significant complexity. A DATEV integration is required — Arthur has prior experience integrating with DATEV through Qonto, and the team claims some local accounting firm connections across markets. However, entering Germany pre-product-market-fit in France is a strategic risk."</div>
+    </div>
+  </div>
+
+  <div class="mentoring-row">
+    <div class="mentoring-area-badge" style="background:#fd7e1422;color:#fd7e14;border:1px solid #fd7e1444">Go-to-Market</div>
+    <div class="mentoring-content">
+      <div class="mentoring-obj"><strong>Objective:</strong> Convert 6 engaged design partners into paying customers — structure the free-to-paid motion, set clear success metrics, and build a repeatable commercial playbook for accounting firms</div>
+      <div class="mentoring-kpi"><span style="background:#e1f5fe;color:#0277bd;font-size:0.75rem;font-weight:700;padding:2px 10px;border-radius:10px;margin-right:8px">KPI</span>% MRR progression month-over-month — target 5 paying firms + €3k+ MRR by month 3, €15k+ MRR by month 6</div>
+      <div class="mentoring-rationale"><strong>Explicit from Jens notetaker, point #3:</strong> "Six design partners are signed, with strong inbound interest from other firms wanting beta access. The alpha (search/recommendation feature) launches imminently as a free tool, with the paid beta following in mid-May. The gap between 'engaged design partner' and 'committed paying customer' is where many early-stage B2B products stall." <strong>Reinforced by Philippe call (Apr 9):</strong> Arthur acknowledged his acquisition playbook at Qonto was at scale with "un budget immense… complètement démesuré" — he has not yet built zero-to-one commercial traction.</div>
+    </div>
+  </div>
+
+  <div class="mentoring-row">
+    <div class="mentoring-area-badge" style="background:#28a74522;color:#28a745;border:1px solid #28a74544">Product Development</div>
+    <div class="mentoring-content">
+      <div class="mentoring-obj"><strong>Objective:</strong> Settle the roadmap across the two validated use cases — upsell/mission opportunity surfacing (universal) vs per-collaborator/per-file profitability (larger firms) — and install a disciplined prioritization process to prevent feature sprawl</div>
+      <div class="mentoring-kpi"><span style="background:#e1f5fe;color:#0277bd;font-size:0.75rem;font-weight:700;padding:2px 10px;border-radius:10px;margin-right:8px">KPI</span>% of roadmap milestones delivered vs. plan — target 80% with a sharpened ICP (firm-size band) locked by month 3</div>
+      <div class="mentoring-rationale"><strong>Explicit from Jens notetaker, point #4:</strong> "Customer interviews validated two separate pain points: (1) surfacing upsell/mission opportunities within existing client portfolios (described as working 'almost universally') and (2) measuring profitability per collaborator/client file (more relevant for larger firms). These serve different segments and have different levels of universality. Choosing where to go deep first — and how to sequence the roadmap — will shape ICP, messaging, and resource allocation." <strong>Team risk:</strong> Antoine's prior company Specify failed because "très géré par des gens qui ont du produit beaucoup plus que du business" — business-disciplined product prioritization is exactly the pattern to reverse.</div>
+    </div>
+  </div>
+
+  <div class="mentoring-row">
+    <div class="mentoring-area-badge" style="background:#17a2b822;color:#17a2b8;border:1px solid #17a2b844">Partnerships</div>
+    <div class="mentoring-content">
+      <div class="mentoring-obj"><strong>Objective:</strong> Structure and accelerate the Qonto distribution partnership (~25% of new French company creators) and sharpen competitive positioning against Pennylane / Visma / DATEV / Spendesk / Finway / Moss</div>
+      <div class="mentoring-kpi"><span style="background:#e1f5fe;color:#0277bd;font-size:0.75rem;font-weight:700;padding:2px 10px;border-radius:10px;margin-right:8px">KPI</span># of active strategic partnerships (Qonto signed + 1–2 additional channel partners) by month 6</div>
+      <div class="mentoring-rationale"><strong>Explicit from deal memo (Saveria_Memo.pdf):</strong> "Setting up an early integration and partnership with Qonto, providing a channel to address approximately 25% of new company creators in France." <strong>Reinforced by Jens notetaker, point #5:</strong> "The notes reference a wide range of potential acquirers and adjacent competitors: Penny Lane, Visma, DATEV, banks, SpendDesk, Finway, and Moss. This suggests the team is aware of a crowded landscape but may not yet have a sharpened positioning narrative against these players — particularly as some (Penny Lane, Visma) sit close to the accounting workflow."</div>
+    </div>
+  </div>
+</section>
+
+<!-- TOP MENTORS -->
+<section id="top-mentors" class="section section-alt">
+  <div class="section-header">
+    <div class="section-icon icon-blue">⭐</div>
+    <div><div class="section-title">Top Mentors <span style="background:#e1f5fe;color:#0277bd;font-size:0.8rem;font-weight:700;padding:3px 12px;border-radius:20px;margin-left:8px">13 mentors · DMF ≥ 8.5</span></div><div class="section-subtitle">Highest-alignment profiles across FinTech, AccountingTech, B2B SaaS pricing, DACH expansion and Qonto-class partnerships</div></div>
+  </div>
+  <div class="mentor-grid">
+    
+    <div class="mentor-card top">
+      <div class="mentor-header-row">
+        <div class="mentor-rank rank-top">1</div>
+        <div class="mentor-name-block">
+          <div class="mentor-name">Frederic Chen</div>
+          <span class="mentor-tier-badge badge-top">TOP MENTOR ★</span>
+          <div class="mentor-location">📍 France</div>
+          <div style="margin-top:5px"><span style="background:#dc354522;color:#dc3545;font-size:0.68rem;font-weight:700;padding:2px 9px;border-radius:10px;letter-spacing:0.5px">Direct Sales (Outbound)</span></div>
+        </div>
+        <div class="score-block">
+          <div class="dmf-score" style="color:#0288d1">9.4</div>
+          <div class="dmf-label">DMF Score</div>
+          <div class="score-bar-wrap"><div class="score-bar-bg"><div class="score-bar-fill" style="width:94%;background:linear-gradient(90deg,#0288d1,#0288d199)"></div></div></div>
+          <div style="margin-top:6px;font-size:0.68rem;color:#94a3b8">Confidence: 9.5/10</div>
+        </div>
+      </div>
+      <div class="mentor-rationale">Ex-Cegid Account Manager, then 6 years at Zuora (subscription billing SaaS) as Strategic Account Manager, now EMEA Strategic Sales Director at Scandit. Direct Cegid-ecosystem experience plus deep B2B enterprise sales across EMEA — the closest possible operator profile for Saveria's accountant-facing motion.</div>
+      <div class="tags-area">
+        <div class="tag-row"><span class="tag-row-label">Sector</span><span class="tag tag-sector">AccountingTech</span><span class="tag tag-sector">B2B SaaS</span><span class="tag tag-sector">Subscription Billing</span></div>
+        <div class="tag-row"><span class="tag-row-label">Skills</span><span class="tag tag-skill">Strategic Sales</span><span class="tag tag-skill">EMEA Sales</span><span class="tag tag-skill">Enterprise Accounts</span><span class="tag tag-skill">Cegid Ecosystem</span></div>
+        <div class="tag-row"><span class="tag-row-label">Geography</span><span class="tag tag-geo">France</span><span class="tag tag-geo">EMEA</span></div>
+      </div>
+      <a href="https://www.linkedin.com/search/results/people/?keywords=Frederic+Chen" class="linkedin-link" target="_blank">🔗 View LinkedIn Profile →</a>
+    </div>
+
+
+    <div class="mentor-card top">
+      <div class="mentor-header-row">
+        <div class="mentor-rank rank-top">2</div>
+        <div class="mentor-name-block">
+          <div class="mentor-name">Marie Renaudin</div>
+          <span class="mentor-tier-badge badge-top">TOP MENTOR ★</span>
+          <div class="mentor-location">📍 France</div>
+          <div style="margin-top:5px"><span style="background:#fd7e1422;color:#fd7e14;font-size:0.68rem;font-weight:700;padding:2px 9px;border-radius:10px;letter-spacing:0.5px">Go-to-Market</span></div>
+        </div>
+        <div class="score-block">
+          <div class="dmf-score" style="color:#0288d1">9.3</div>
+          <div class="dmf-label">DMF Score</div>
+          <div class="score-bar-wrap"><div class="score-bar-bg"><div class="score-bar-fill" style="width:93%;background:linear-gradient(90deg,#0288d1,#0288d199)"></div></div></div>
+          <div style="margin-top:6px;font-size:0.68rem;color:#94a3b8">Confidence: 9.5/10</div>
+        </div>
+      </div>
+      <div class="mentor-rationale">Ex-CEO France de Younited (fintech consumer credit, 3 years, team of 130). Launched Younited across Europe. Founded Infinit. (SaaS + B2C credit/payment for automotive pros). Described internally by Inovexus as 'profil très fintech et GTM Europe, top mentor Fintech'. Direct fit for Saveria's French fintech GTM needs.</div>
+      <div class="tags-area">
+        <div class="tag-row"><span class="tag-row-label">Sector</span><span class="tag tag-sector">FinTech</span><span class="tag tag-sector">Consumer Credit</span><span class="tag tag-sector">B2B SaaS</span></div>
+        <div class="tag-row"><span class="tag-row-label">Skills</span><span class="tag tag-skill">GTM Europe</span><span class="tag tag-skill">Scaling</span><span class="tag tag-skill">Fintech Leadership</span><span class="tag tag-skill">CEO Operator</span></div>
+        <div class="tag-row"><span class="tag-row-label">Geography</span><span class="tag tag-geo">France</span><span class="tag tag-geo">Europe</span></div>
+      </div>
+      <a href="https://www.linkedin.com/search/results/people/?keywords=Marie+Renaudin" class="linkedin-link" target="_blank">🔗 View LinkedIn Profile →</a>
+    </div>
+
+
+    <div class="mentor-card top">
+      <div class="mentor-header-row">
+        <div class="mentor-rank rank-top">3</div>
+        <div class="mentor-name-block">
+          <div class="mentor-name">Matteo Bernardis</div>
+          <span class="mentor-tier-badge badge-top">TOP MENTOR ★</span>
+          <div class="mentor-location">📍 Switzerland</div>
+          <div style="margin-top:5px"><span style="background:#17a2b822;color:#17a2b8;font-size:0.68rem;font-weight:700;padding:2px 9px;border-radius:10px;letter-spacing:0.5px">Partnerships</span></div>
+        </div>
+        <div class="score-block">
+          <div class="dmf-score" style="color:#0288d1">9.2</div>
+          <div class="dmf-label">DMF Score</div>
+          <div class="score-bar-wrap"><div class="score-bar-bg"><div class="score-bar-fill" style="width:92%;background:linear-gradient(90deg,#0288d1,#0288d199)"></div></div></div>
+          <div style="margin-top:6px;font-size:0.68rem;color:#94a3b8">Confidence: 9.3/10</div>
+        </div>
+      </div>
+      <div class="mentor-rationale">Founder of UBS Next (UBS's corporate venture arm). 15 years at UBS in Strategy, BD and Innovation. Ex-OC&C, Barclays Capital, Goldman Sachs quant. INSEAD MBA, CFA, CAIA. Deep fintech/banking expertise plus proven ability to structure partnerships with financial institutions — critical for Saveria's Qonto integration and future bank partnerships.</div>
+      <div class="tags-area">
+        <div class="tag-row"><span class="tag-row-label">Sector</span><span class="tag tag-sector">FinTech</span><span class="tag tag-sector">Banking</span><span class="tag tag-sector">Corporate Venture</span></div>
+        <div class="tag-row"><span class="tag-row-label">Skills</span><span class="tag tag-skill">Partnerships</span><span class="tag tag-skill">BD</span><span class="tag tag-skill">GTM</span><span class="tag tag-skill">Open Innovation</span></div>
+        <div class="tag-row"><span class="tag-row-label">Geography</span><span class="tag tag-geo">Switzerland</span><span class="tag tag-geo">Europe</span></div>
+      </div>
+      <a href="https://www.linkedin.com/search/results/people/?keywords=Matteo+Bernardis" class="linkedin-link" target="_blank">🔗 View LinkedIn Profile →</a>
+    </div>
+
+
+    <div class="mentor-card top">
+      <div class="mentor-header-row">
+        <div class="mentor-rank rank-top">4</div>
+        <div class="mentor-name-block">
+          <div class="mentor-name">Edoardo Benedetto</div>
+          <span class="mentor-tier-badge badge-top">TOP MENTOR ★</span>
+          <div class="mentor-location">📍 Italy</div>
+          <div style="margin-top:5px"><span style="background:#28a74522;color:#28a745;font-size:0.68rem;font-weight:700;padding:2px 9px;border-radius:10px;letter-spacing:0.5px">Product Development</span></div>
+        </div>
+        <div class="score-block">
+          <div class="dmf-score" style="color:#0288d1">9.0</div>
+          <div class="dmf-label">DMF Score</div>
+          <div class="score-bar-wrap"><div class="score-bar-bg"><div class="score-bar-fill" style="width:90%;background:linear-gradient(90deg,#0288d1,#0288d199)"></div></div></div>
+          <div style="margin-top:6px;font-size:0.68rem;color:#94a3b8">Confidence: 9.4/10</div>
+        </div>
+      </div>
+      <div class="mentor-rationale">Co-founder of Oval (consumer fintech, acquired by Guru Capital per FintechFutures). Deep expertise in UX for financial services, mobile banking, and early-stage product design. Now CPO at Digital Riot and Head of Product Design at Vaultik. Directly relevant for Saveria's product-prioritization challenge across two distinct user personas (SMBs vs accountants).</div>
+      <div class="tags-area">
+        <div class="tag-row"><span class="tag-row-label">Sector</span><span class="tag tag-sector">FinTech</span><span class="tag tag-sector">Consumer Banking</span><span class="tag tag-sector">Product Design</span></div>
+        <div class="tag-row"><span class="tag-row-label">Skills</span><span class="tag tag-skill">Product Strategy</span><span class="tag tag-skill">PMF</span><span class="tag tag-skill">UX Financial Services</span><span class="tag tag-skill">Early-Stage Product</span></div>
+        <div class="tag-row"><span class="tag-row-label">Geography</span><span class="tag tag-geo">Italy</span><span class="tag tag-geo">Europe</span></div>
+      </div>
+      <a href="https://www.linkedin.com/search/results/people/?keywords=Edoardo+Benedetto" class="linkedin-link" target="_blank">🔗 View LinkedIn Profile →</a>
+    </div>
+
+
+    <div class="mentor-card top">
+      <div class="mentor-header-row">
+        <div class="mentor-rank rank-top">5</div>
+        <div class="mentor-name-block">
+          <div class="mentor-name">Shruti Tournatory</div>
+          <span class="mentor-tier-badge badge-top">TOP MENTOR ★</span>
+          <div class="mentor-location">📍 Portugal</div>
+          <div style="margin-top:5px"><span style="background:#fd7e1422;color:#fd7e14;font-size:0.68rem;font-weight:700;padding:2px 9px;border-radius:10px;letter-spacing:0.5px">Go-to-Market</span></div>
+        </div>
+        <div class="score-block">
+          <div class="dmf-score" style="color:#0288d1">8.9</div>
+          <div class="dmf-label">DMF Score</div>
+          <div class="score-bar-wrap"><div class="score-bar-bg"><div class="score-bar-fill" style="width:89%;background:linear-gradient(90deg,#0288d1,#0288d199)"></div></div></div>
+          <div style="margin-top:6px;font-size:0.68rem;color:#94a3b8">Confidence: 8.3/10</div>
+        </div>
+      </div>
+      <div class="mentor-rationale">Self-described fields of expertise: GTM, Product-Market Fit, Coaching, Fundraising. Explicitly lists B2B SaaS and Fintech as verticals of interest; explicitly states 'not very useful with consumer and marketplaces' — perfect alignment with Saveria's B2B SaaS positioning. Strong European ecosystem knowledge.</div>
+      <div class="tags-area">
+        <div class="tag-row"><span class="tag-row-label">Sector</span><span class="tag tag-sector">B2B SaaS</span><span class="tag tag-sector">FinTech</span></div>
+        <div class="tag-row"><span class="tag-row-label">Skills</span><span class="tag tag-skill">GTM</span><span class="tag tag-skill">PMF</span><span class="tag tag-skill">Fundraising</span><span class="tag tag-skill">Coaching</span></div>
+        <div class="tag-row"><span class="tag-row-label">Geography</span><span class="tag tag-geo">Portugal</span><span class="tag tag-geo">Europe</span></div>
+      </div>
+      <a href="https://www.linkedin.com/search/results/people/?keywords=Shruti+Tournatory" class="linkedin-link" target="_blank">🔗 View LinkedIn Profile →</a>
+    </div>
+
+
+    <div class="mentor-card top">
+      <div class="mentor-header-row">
+        <div class="mentor-rank rank-top">6</div>
+        <div class="mentor-name-block">
+          <div class="mentor-name">Thomas Vollmer</div>
+          <span class="mentor-tier-badge badge-top">TOP MENTOR ★</span>
+          <div class="mentor-location">📍 Nordics</div>
+          <div style="margin-top:5px"><span style="background:#dc354522;color:#dc3545;font-size:0.68rem;font-weight:700;padding:2px 9px;border-radius:10px;letter-spacing:0.5px">Direct Sales (Outbound)</span></div>
+        </div>
+        <div class="score-block">
+          <div class="dmf-score" style="color:#0288d1">8.8</div>
+          <div class="dmf-label">DMF Score</div>
+          <div class="score-bar-wrap"><div class="score-bar-bg"><div class="score-bar-fill" style="width:88%;background:linear-gradient(90deg,#0288d1,#0288d199)"></div></div></div>
+          <div style="margin-top:6px;font-size:0.68rem;color:#94a3b8">Confidence: 9.5/10</div>
+        </div>
+      </div>
+      <div class="mentor-rationale">Commercial executive across Capgemini, Google Cloud, Salesforce, Microsoft, and boost.ai. VP Sales at boost.ai (conversational AI) 2023-2025. Currently Advisory Board Member at Muinmos (RegTech AI scale-up) on GTM and sales execution. Strong track record in financial services and enterprise SaaS sales — exactly what Saveria needs to formalize outbound to accounting firms.</div>
+      <div class="tags-area">
+        <div class="tag-row"><span class="tag-row-label">Sector</span><span class="tag tag-sector">SaaS</span><span class="tag tag-sector">AI</span><span class="tag tag-sector">Financial Services</span><span class="tag tag-sector">RegTech</span></div>
+        <div class="tag-row"><span class="tag-row-label">Skills</span><span class="tag tag-skill">B2B Sales</span><span class="tag tag-skill">GTM</span><span class="tag tag-skill">Enterprise Sales</span><span class="tag tag-skill">Sales Leadership</span></div>
+        <div class="tag-row"><span class="tag-row-label">Geography</span><span class="tag tag-geo">Nordics</span><span class="tag tag-geo">EMEA</span></div>
+      </div>
+      <a href="https://www.linkedin.com/search/results/people/?keywords=Thomas+Vollmer" class="linkedin-link" target="_blank">🔗 View LinkedIn Profile →</a>
+    </div>
+
+
+    <div class="mentor-card top">
+      <div class="mentor-header-row">
+        <div class="mentor-rank rank-top">7</div>
+        <div class="mentor-name-block">
+          <div class="mentor-name">Ingo Juraske</div>
+          <span class="mentor-tier-badge badge-top">TOP MENTOR ★</span>
+          <div class="mentor-location">📍 Germany</div>
+          <div style="margin-top:5px"><span style="background:#e83e8c22;color:#e83e8c;font-size:0.68rem;font-weight:700;padding:2px 9px;border-radius:10px;letter-spacing:0.5px">Pricing Strategy</span></div>
+        </div>
+        <div class="score-block">
+          <div class="dmf-score" style="color:#0288d1">8.7</div>
+          <div class="dmf-label">DMF Score</div>
+          <div class="score-bar-wrap"><div class="score-bar-bg"><div class="score-bar-fill" style="width:87%;background:linear-gradient(90deg,#0288d1,#0288d199)"></div></div></div>
+          <div style="margin-top:6px;font-size:0.68rem;color:#94a3b8">Confidence: 8.5/10</div>
+        </div>
+      </div>
+      <div class="mentor-rationale">Solo founder and operator with deep expertise in pricing, monetization, performance marketing and growth. Based in DACH region. Direct relevance to Saveria's two most urgent bottlenecks: pricing experimentation (€25/seat paid beta starting mid-May, 50% discount for early adopters needs validation) and paid acquisition playbooks.</div>
+      <div class="tags-area">
+        <div class="tag-row"><span class="tag-row-label">Sector</span><span class="tag tag-sector">B2B SaaS</span></div>
+        <div class="tag-row"><span class="tag-row-label">Skills</span><span class="tag tag-skill">Pricing</span><span class="tag tag-skill">Monetization</span><span class="tag tag-skill">Performance Marketing</span><span class="tag tag-skill">Growth</span></div>
+        <div class="tag-row"><span class="tag-row-label">Geography</span><span class="tag tag-geo">Germany</span><span class="tag tag-geo">DACH</span></div>
+      </div>
+      <a href="https://www.linkedin.com/search/results/people/?keywords=Ingo+Juraske" class="linkedin-link" target="_blank">🔗 View LinkedIn Profile →</a>
+    </div>
+
+
+    <div class="mentor-card top">
+      <div class="mentor-header-row">
+        <div class="mentor-rank rank-top">8</div>
+        <div class="mentor-name-block">
+          <div class="mentor-name">Antoinet Van Dalen</div>
+          <span class="mentor-tier-badge badge-top">TOP MENTOR ★</span>
+          <div class="mentor-location">📍 France / Netherlands</div>
+          <div style="margin-top:5px"><span style="background:#28a74522;color:#28a745;font-size:0.68rem;font-weight:700;padding:2px 9px;border-radius:10px;letter-spacing:0.5px">Product Development</span></div>
+        </div>
+        <div class="score-block">
+          <div class="dmf-score" style="color:#0288d1">8.7</div>
+          <div class="dmf-label">DMF Score</div>
+          <div class="score-bar-wrap"><div class="score-bar-bg"><div class="score-bar-fill" style="width:87%;background:linear-gradient(90deg,#0288d1,#0288d199)"></div></div></div>
+          <div style="margin-top:6px;font-size:0.68rem;color:#94a3b8">Confidence: 8.5/10</div>
+        </div>
+      </div>
+      <div class="mentor-rationale">Ex-Deezer, Ex-Cegid (direct Cegid alumni — major signal for Saveria). Mentor at HEC Incubator AND Cegid Data Lab at Station F, focused on customer success best practices. 15+ years in SaaS, HRTech, VideoTech. Angel invested in Gladia, Humanitics.ai. Customer success + Cegid ecosystem knowledge makes this a uniquely well-fit mentor for Saveria.</div>
+      <div class="tags-area">
+        <div class="tag-row"><span class="tag-row-label">Sector</span><span class="tag tag-sector">B2B SaaS</span><span class="tag tag-sector">AccountingTech (Cegid)</span><span class="tag tag-sector">SaaS</span></div>
+        <div class="tag-row"><span class="tag-row-label">Skills</span><span class="tag tag-skill">Customer Success</span><span class="tag tag-skill">Retention</span><span class="tag tag-skill">Workshop Design</span></div>
+        <div class="tag-row"><span class="tag-row-label">Geography</span><span class="tag tag-geo">France</span><span class="tag tag-geo">Netherlands</span></div>
+      </div>
+      <a href="https://www.linkedin.com/search/results/people/?keywords=Antoinet+Van+Dalen" class="linkedin-link" target="_blank">🔗 View LinkedIn Profile →</a>
+    </div>
+
+
+    <div class="mentor-card top">
+      <div class="mentor-header-row">
+        <div class="mentor-rank rank-top">9</div>
+        <div class="mentor-name-block">
+          <div class="mentor-name">Martin Cerullo</div>
+          <span class="mentor-tier-badge badge-top">TOP MENTOR ★</span>
+          <div class="mentor-location">📍 Denmark</div>
+          <div style="margin-top:5px"><span style="background:#6c757d22;color:#6c757d;font-size:0.68rem;font-weight:700;padding:2px 9px;border-radius:10px;letter-spacing:0.5px">HR & Talent</span></div>
+        </div>
+        <div class="score-block">
+          <div class="dmf-score" style="color:#0288d1">8.6</div>
+          <div class="dmf-label">DMF Score</div>
+          <div class="score-bar-wrap"><div class="score-bar-bg"><div class="score-bar-fill" style="width:86%;background:linear-gradient(90deg,#0288d1,#0288d199)"></div></div></div>
+          <div style="margin-top:6px;font-size:0.68rem;color:#94a3b8">Confidence: 9/10</div>
+        </div>
+      </div>
+      <div class="mentor-rationale">Current Chief People Officer at Pleo (high-growth fintech in Copenhagen). Previously CPO at Oda (3000+ employees across markets), and long track at DFI Retail Group / IKEA in talent. Explicitly lists FinTech (Pleo) and Financials-related as verticals. For Saveria, highly valuable on scaling a commercial/product team as they move from 3 to 15+ people pre-Series A.</div>
+      <div class="tags-area">
+        <div class="tag-row"><span class="tag-row-label">Sector</span><span class="tag tag-sector">FinTech</span><span class="tag tag-sector">HRTech</span></div>
+        <div class="tag-row"><span class="tag-row-label">Skills</span><span class="tag tag-skill">People Strategy</span><span class="tag tag-skill">Org Design</span><span class="tag tag-skill">Scaling Teams</span><span class="tag tag-skill">Post-Merger Integration</span></div>
+        <div class="tag-row"><span class="tag-row-label">Geography</span><span class="tag tag-geo">Denmark</span><span class="tag tag-geo">Europe</span></div>
+      </div>
+      <a href="https://www.linkedin.com/search/results/people/?keywords=Martin+Cerullo" class="linkedin-link" target="_blank">🔗 View LinkedIn Profile →</a>
+    </div>
+
+
+    <div class="mentor-card top">
+      <div class="mentor-header-row">
+        <div class="mentor-rank rank-top">10</div>
+        <div class="mentor-name-block">
+          <div class="mentor-name">Khellar Crawford</div>
+          <span class="mentor-tier-badge badge-top">TOP MENTOR ★</span>
+          <div class="mentor-location">📍 Germany (ex-Berlin)</div>
+          <div style="margin-top:5px"><span style="background:#e83e8c22;color:#e83e8c;font-size:0.68rem;font-weight:700;padding:2px 9px;border-radius:10px;letter-spacing:0.5px">Pricing Strategy</span></div>
+        </div>
+        <div class="score-block">
+          <div class="dmf-score" style="color:#0288d1">8.5</div>
+          <div class="dmf-label">DMF Score</div>
+          <div class="score-bar-wrap"><div class="score-bar-bg"><div class="score-bar-fill" style="width:85%;background:linear-gradient(90deg,#0288d1,#0288d199)"></div></div></div>
+          <div style="margin-top:6px;font-size:0.68rem;color:#94a3b8">Confidence: 8.9/10</div>
+        </div>
+      </div>
+      <div class="mentor-rationale">Serial entrepreneur, ex-CTO of AdTech startup, founded a fintech to 'make money stress-free'. Lived in Berlin. Explicitly loves working on: Narrative, Pitch, Product, Pricing, Sales strategy, Fundraising strategies. Prefers 1-1 whiteboard problem-solving. Direct match for Saveria's pricing and positioning bottlenecks.</div>
+      <div class="tags-area">
+        <div class="tag-row"><span class="tag-row-label">Sector</span><span class="tag tag-sector">FinTech</span><span class="tag tag-sector">AdTech</span></div>
+        <div class="tag-row"><span class="tag-row-label">Skills</span><span class="tag tag-skill">Pricing</span><span class="tag tag-skill">Narrative</span><span class="tag tag-skill">Sales Strategy</span><span class="tag tag-skill">Pitch</span></div>
+        <div class="tag-row"><span class="tag-row-label">Geography</span><span class="tag tag-geo">Germany</span><span class="tag tag-geo">Europe</span></div>
+      </div>
+      <a href="https://www.linkedin.com/search/results/people/?keywords=Khellar+Crawford" class="linkedin-link" target="_blank">🔗 View LinkedIn Profile →</a>
+    </div>
+
+
+    <div class="mentor-card top">
+      <div class="mentor-header-row">
+        <div class="mentor-rank rank-top">11</div>
+        <div class="mentor-name-block">
+          <div class="mentor-name">Pierre Lahbabi</div>
+          <span class="mentor-tier-badge badge-top">TOP MENTOR ★</span>
+          <div class="mentor-location">📍 France</div>
+          <div style="margin-top:5px"><span style="background:#17a2b822;color:#17a2b8;font-size:0.68rem;font-weight:700;padding:2px 9px;border-radius:10px;letter-spacing:0.5px">Partnerships</span></div>
+        </div>
+        <div class="score-block">
+          <div class="dmf-score" style="color:#0288d1">8.5</div>
+          <div class="dmf-label">DMF Score</div>
+          <div class="score-bar-wrap"><div class="score-bar-bg"><div class="score-bar-fill" style="width:85%;background:linear-gradient(90deg,#0288d1,#0288d199)"></div></div></div>
+          <div style="margin-top:6px;font-size:0.68rem;color:#94a3b8">Confidence: 8.0/10</div>
+        </div>
+      </div>
+      <div class="mentor-rationale">Payment and digital security executive with solid international experience in strategy, M&A and innovation. Onboarded by Inovexus as 'mentor Paiement, Fintech & B2G'. Investor in ~10 startups including one US scale-up valued at $2B. Directly relevant for Qonto-style payment partnership structuring and financial infrastructure integrations.</div>
+      <div class="tags-area">
+        <div class="tag-row"><span class="tag-row-label">Sector</span><span class="tag tag-sector">FinTech</span><span class="tag tag-sector">Payments</span><span class="tag tag-sector">B2G</span></div>
+        <div class="tag-row"><span class="tag-row-label">Skills</span><span class="tag tag-skill">Partnerships</span><span class="tag tag-skill">M&A</span><span class="tag tag-skill">International</span><span class="tag tag-skill">Payment Infrastructure</span></div>
+        <div class="tag-row"><span class="tag-row-label">Geography</span><span class="tag tag-geo">France</span></div>
+      </div>
+      <a href="https://www.linkedin.com/search/results/people/?keywords=Pierre+Lahbabi" class="linkedin-link" target="_blank">🔗 View LinkedIn Profile →</a>
+    </div>
+
+
+    <div class="mentor-card top">
+      <div class="mentor-header-row">
+        <div class="mentor-rank rank-top">12</div>
+        <div class="mentor-name-block">
+          <div class="mentor-name">Philippe Peters</div>
+          <span class="mentor-tier-badge badge-top">TOP MENTOR ★</span>
+          <div class="mentor-location">📍 France</div>
+          <div style="margin-top:5px"><span style="background:#20c99722;color:#20c997;font-size:0.68rem;font-weight:700;padding:2px 9px;border-radius:10px;letter-spacing:0.5px">Finance Structuration</span></div>
+        </div>
+        <div class="score-block">
+          <div class="dmf-score" style="color:#0288d1">8.5</div>
+          <div class="dmf-label">DMF Score</div>
+          <div class="score-bar-wrap"><div class="score-bar-bg"><div class="score-bar-fill" style="width:85%;background:linear-gradient(90deg,#0288d1,#0288d199)"></div></div></div>
+          <div style="margin-top:6px;font-size:0.68rem;color:#94a3b8">Confidence: 8.5/10</div>
+        </div>
+      </div>
+      <div class="mentor-rationale">Ex-McKinsey / BCG / EY / Bain consultant with deep GTM and due diligence experience in APAC and Europe. Strategic advisor with strong board-level financial expertise. Worked on major M&A transactions and business unit scaling. Onboarded as mentor by Inovexus with strong understanding of the GP model. Valuable for Saveria's finance structuring and investor readiness.</div>
+      <div class="tags-area">
+        <div class="tag-row"><span class="tag-row-label">Sector</span><span class="tag tag-sector">Consulting</span><span class="tag tag-sector">Finance</span><span class="tag tag-sector">M&A</span></div>
+        <div class="tag-row"><span class="tag-row-label">Skills</span><span class="tag tag-skill">Strategy</span><span class="tag tag-skill">Due Diligence</span><span class="tag tag-skill">GTM APAC</span><span class="tag tag-skill">Board Advisory</span></div>
+        <div class="tag-row"><span class="tag-row-label">Geography</span><span class="tag tag-geo">France</span><span class="tag tag-geo">Europe</span></div>
+      </div>
+      <a href="https://www.linkedin.com/search/results/people/?keywords=Philippe+Peters" class="linkedin-link" target="_blank">🔗 View LinkedIn Profile →</a>
+    </div>
+
+
+    <div class="mentor-card top">
+      <div class="mentor-header-row">
+        <div class="mentor-rank rank-top">13</div>
+        <div class="mentor-name-block">
+          <div class="mentor-name">Arnaud Perrin</div>
+          <span class="mentor-tier-badge badge-top">TOP MENTOR ★</span>
+          <div class="mentor-location">📍 France</div>
+          <div style="margin-top:5px"><span style="background:#20c99722;color:#20c997;font-size:0.68rem;font-weight:700;padding:2px 9px;border-radius:10px;letter-spacing:0.5px">Finance Structuration</span></div>
+        </div>
+        <div class="score-block">
+          <div class="dmf-score" style="color:#0288d1">8.5</div>
+          <div class="dmf-label">DMF Score</div>
+          <div class="score-bar-wrap"><div class="score-bar-bg"><div class="score-bar-fill" style="width:85%;background:linear-gradient(90deg,#0288d1,#0288d199)"></div></div></div>
+          <div style="margin-top:6px;font-size:0.68rem;color:#94a3b8">Confidence: 7.5/10</div>
+        </div>
+      </div>
+      <div class="mentor-rationale">Ex-Banque Natixis with deep fintech/regtech/banking expertise. BA at Invyo, mentor for fintech startups. Explicitly helps founders on banking license, BP, pitch, risk, compliance, and recruiting. 4 years in Hong Kong + 3 years in New York in banking. Strong regulatory and compliance profile — critical for Saveria's human-in-the-loop compliance positioning with French fiscal law.</div>
+      <div class="tags-area">
+        <div class="tag-row"><span class="tag-row-label">Sector</span><span class="tag tag-sector">FinTech</span><span class="tag tag-sector">RegTech</span><span class="tag tag-sector">Banking</span></div>
+        <div class="tag-row"><span class="tag-row-label">Skills</span><span class="tag tag-skill">Banking License</span><span class="tag tag-skill">Compliance</span><span class="tag tag-skill">Risk</span><span class="tag tag-skill">Recruiting</span><span class="tag tag-skill">Regulatory Strategy</span></div>
+        <div class="tag-row"><span class="tag-row-label">Geography</span><span class="tag tag-geo">France</span><span class="tag tag-geo">Asia</span></div>
+      </div>
+      <a href="https://www.linkedin.com/search/results/people/?keywords=Arnaud+Perrin" class="linkedin-link" target="_blank">🔗 View LinkedIn Profile →</a>
+    </div>
+
+  </div>
+</section>
+
+<!-- QUALIFIED MENTORS -->
+<section id="qualified-mentors" class="section">
+  <div class="section-header">
+    <div class="section-icon icon-green">✅</div>
+    <div><div class="section-title">Qualified Mentors <span style="background:#e8f5e9;color:#1e7e44;font-size:0.8rem;font-weight:700;padding:3px 12px;border-radius:20px;margin-left:8px">18 mentors · DMF 7.0–8.4</span></div><div class="section-subtitle">Adjacent fit — strong in one dimension (fintech ecosystem, SMB sales, DACH, finance structuration) with partial match on the rest</div></div>
+  </div>
+  <div class="mentor-grid">
+    
+    <div class="mentor-card qualified">
+      <div class="mentor-header-row">
+        <div class="mentor-rank rank-qual">1</div>
+        <div class="mentor-name-block">
+          <div class="mentor-name">Scott Dodson</div>
+          <span class="mentor-tier-badge badge-qual">QUALIFIED</span>
+          <div class="mentor-location">📍 Spain (Barcelona)</div>
+          <div style="margin-top:5px"><span style="background:#fd7e1422;color:#fd7e14;font-size:0.68rem;font-weight:700;padding:2px 9px;border-radius:10px;letter-spacing:0.5px">Go-to-Market</span></div>
+        </div>
+        <div class="score-block">
+          <div class="dmf-score" style="color:#1a3a6b">8.3</div>
+          <div class="dmf-label">DMF Score</div>
+          <div class="score-bar-wrap"><div class="score-bar-bg"><div class="score-bar-fill" style="width:83%;background:linear-gradient(90deg,#1a3a6b,#1a3a6b99)"></div></div></div>
+          <div style="margin-top:6px;font-size:0.68rem;color:#94a3b8">Confidence: 7.5/10</div>
+        </div>
+      </div>
+      <div class="mentor-rationale">Joined Holded — B2B fintech for SMBs in Spain growing 40% YoY. Directly comparable business to Saveria. Also Techstars mentor (4 exited startups). US founder exited 2 fintechs before moving to Europe. Excellent sparring on B2B fintech scaling in Europe.</div>
+      <div class="tags-area">
+        <div class="tag-row"><span class="tag-row-label">Sector</span><span class="tag tag-sector">FinTech</span><span class="tag tag-sector">B2B SaaS</span><span class="tag tag-sector">SMB</span></div>
+        <div class="tag-row"><span class="tag-row-label">Skills</span><span class="tag tag-skill">Scaling</span><span class="tag tag-skill">Mentoring</span><span class="tag tag-skill">US-EU Bridge</span></div>
+        <div class="tag-row"><span class="tag-row-label">Geography</span><span class="tag tag-geo">Spain</span><span class="tag tag-geo">US</span></div>
+      </div>
+      <a href="https://www.linkedin.com/search/results/people/?keywords=Scott+Dodson" class="linkedin-link" target="_blank">🔗 View LinkedIn Profile →</a>
+    </div>
+
+
+    <div class="mentor-card qualified">
+      <div class="mentor-header-row">
+        <div class="mentor-rank rank-qual">2</div>
+        <div class="mentor-name-block">
+          <div class="mentor-name">Laura Voinea</div>
+          <span class="mentor-tier-badge badge-qual">QUALIFIED</span>
+          <div class="mentor-location">📍 Romania</div>
+          <div style="margin-top:5px"><span style="background:#6c757d22;color:#6c757d;font-size:0.68rem;font-weight:700;padding:2px 9px;border-radius:10px;letter-spacing:0.5px">HR & Talent</span></div>
+        </div>
+        <div class="score-block">
+          <div class="dmf-score" style="color:#1a3a6b">8.2</div>
+          <div class="dmf-label">DMF Score</div>
+          <div class="score-bar-wrap"><div class="score-bar-bg"><div class="score-bar-fill" style="width:82%;background:linear-gradient(90deg,#1a3a6b,#1a3a6b99)"></div></div></div>
+          <div style="margin-top:6px;font-size:0.68rem;color:#94a3b8">Confidence: 8.0/10</div>
+        </div>
+      </div>
+      <div class="mentor-rationale">HR Strategy & Transformation leader with deep banking experience (HR Director at BCR Banca pentru Locuinte for 12+ years, Advisor to CEO at Banca Romaneasca). Explicitly states 'HR support for Fintech' as core vertical. Trilingual EN/DE/FR. Valuable as Saveria professionalizes HR while scaling commercial team.</div>
+      <div class="tags-area">
+        <div class="tag-row"><span class="tag-row-label">Sector</span><span class="tag tag-sector">Banking</span><span class="tag tag-sector">FinTech</span><span class="tag tag-sector">HRTech</span></div>
+        <div class="tag-row"><span class="tag-row-label">Skills</span><span class="tag tag-skill">HR Strategy</span><span class="tag tag-skill">Talent Management</span><span class="tag tag-skill">Employee Development</span></div>
+        <div class="tag-row"><span class="tag-row-label">Geography</span><span class="tag tag-geo">Romania</span><span class="tag tag-geo">Europe</span></div>
+      </div>
+      <a href="https://www.linkedin.com/search/results/people/?keywords=Laura+Voinea" class="linkedin-link" target="_blank">🔗 View LinkedIn Profile →</a>
+    </div>
+
+
+    <div class="mentor-card qualified">
+      <div class="mentor-header-row">
+        <div class="mentor-rank rank-qual">3</div>
+        <div class="mentor-name-block">
+          <div class="mentor-name">Alex Pierre</div>
+          <span class="mentor-tier-badge badge-qual">QUALIFIED</span>
+          <div class="mentor-location">📍 France</div>
+          <div style="margin-top:5px"><span style="background:#17a2b822;color:#17a2b8;font-size:0.68rem;font-weight:700;padding:2px 9px;border-radius:10px;letter-spacing:0.5px">Partnerships</span></div>
+        </div>
+        <div class="score-block">
+          <div class="dmf-score" style="color:#1a3a6b">8.1</div>
+          <div class="dmf-label">DMF Score</div>
+          <div class="score-bar-wrap"><div class="score-bar-bg"><div class="score-bar-fill" style="width:81%;background:linear-gradient(90deg,#1a3a6b,#1a3a6b99)"></div></div></div>
+          <div style="margin-top:6px;font-size:0.68rem;color:#94a3b8">Confidence: 7.0/10</div>
+        </div>
+      </div>
+      <div class="mentor-rationale">Background explicitly in fintech: bitcoin, brokers, trading, payments, real estate fintech. Onboarded as mentor and very motivated GP. Brings sector-specific dealflow and network in fintech payments — valuable for Saveria's Qonto-type integrations.</div>
+      <div class="tags-area">
+        <div class="tag-row"><span class="tag-row-label">Sector</span><span class="tag tag-sector">FinTech</span><span class="tag tag-sector">Payments</span><span class="tag tag-sector">Trading</span></div>
+        <div class="tag-row"><span class="tag-row-label">Skills</span><span class="tag tag-skill">Network</span><span class="tag tag-skill">Dealflow</span><span class="tag tag-skill">Sector Expertise</span></div>
+        <div class="tag-row"><span class="tag-row-label">Geography</span><span class="tag tag-geo">France</span></div>
+      </div>
+      <a href="https://www.linkedin.com/search/results/people/?keywords=Alex+Pierre" class="linkedin-link" target="_blank">🔗 View LinkedIn Profile →</a>
+    </div>
+
+
+    <div class="mentor-card qualified">
+      <div class="mentor-header-row">
+        <div class="mentor-rank rank-qual">4</div>
+        <div class="mentor-name-block">
+          <div class="mentor-name">Thibault Gossé</div>
+          <span class="mentor-tier-badge badge-qual">QUALIFIED</span>
+          <div class="mentor-location">📍 France</div>
+          <div style="margin-top:5px"><span style="background:#fd7e1422;color:#fd7e14;font-size:0.68rem;font-weight:700;padding:2px 9px;border-radius:10px;letter-spacing:0.5px">Go-to-Market</span></div>
+        </div>
+        <div class="score-block">
+          <div class="dmf-score" style="color:#1a3a6b">8.0</div>
+          <div class="dmf-label">DMF Score</div>
+          <div class="score-bar-wrap"><div class="score-bar-bg"><div class="score-bar-fill" style="width:80%;background:linear-gradient(90deg,#1a3a6b,#1a3a6b99)"></div></div></div>
+          <div style="margin-top:6px;font-size:0.68rem;color:#94a3b8">Confidence: 8.2/10</div>
+        </div>
+      </div>
+      <div class="mentor-rationale">9 years at Capgemini, Chief Data Officer in a Fintech acquired by BNP, 9 years at Auchan as C-level, board member, operating partner. Explicitly mentions 'GTM en moins de 6 mois' as a core specialty. Senior French profile with fintech + retail SMB experience (Saveria sells to SMBs).</div>
+      <div class="tags-area">
+        <div class="tag-row"><span class="tag-row-label">Sector</span><span class="tag tag-sector">FinTech</span><span class="tag tag-sector">Retail SMBs</span><span class="tag tag-sector">Data</span></div>
+        <div class="tag-row"><span class="tag-row-label">Skills</span><span class="tag tag-skill">GTM</span><span class="tag tag-skill">Data Strategy</span><span class="tag tag-skill">Digital Transformation</span><span class="tag tag-skill">Board</span></div>
+        <div class="tag-row"><span class="tag-row-label">Geography</span><span class="tag tag-geo">France</span></div>
+      </div>
+      <a href="https://www.linkedin.com/search/results/people/?keywords=Thibault+Gossé" class="linkedin-link" target="_blank">🔗 View LinkedIn Profile →</a>
+    </div>
+
+
+    <div class="mentor-card qualified">
+      <div class="mentor-header-row">
+        <div class="mentor-rank rank-qual">5</div>
+        <div class="mentor-name-block">
+          <div class="mentor-name">Rajat Mittal</div>
+          <span class="mentor-tier-badge badge-qual">QUALIFIED</span>
+          <div class="mentor-location">📍 UK / India</div>
+          <div style="margin-top:5px"><span style="background:#fd7e1422;color:#fd7e14;font-size:0.68rem;font-weight:700;padding:2px 9px;border-radius:10px;letter-spacing:0.5px">Go-to-Market</span></div>
+        </div>
+        <div class="score-block">
+          <div class="dmf-score" style="color:#1a3a6b">7.9</div>
+          <div class="dmf-label">DMF Score</div>
+          <div class="score-bar-wrap"><div class="score-bar-bg"><div class="score-bar-fill" style="width:79%;background:linear-gradient(90deg,#1a3a6b,#1a3a6b99)"></div></div></div>
+          <div style="margin-top:6px;font-size:0.68rem;color:#94a3b8">Confidence: 7.0/10</div>
+        </div>
+      </div>
+      <div class="mentor-rationale">Engineer with product expertise in Wealth Management / Fintech. Launched Amazon products. Skills explicitly listed: GTM, CAC, Fundraising, Customer Success. Board member profile with pragmatic fintech product and go-to-market know-how.</div>
+      <div class="tags-area">
+        <div class="tag-row"><span class="tag-row-label">Sector</span><span class="tag tag-sector">FinTech</span><span class="tag tag-sector">Wealth Management</span></div>
+        <div class="tag-row"><span class="tag-row-label">Skills</span><span class="tag tag-skill">GTM</span><span class="tag tag-skill">CAC Optimization</span><span class="tag tag-skill">Customer Success</span></div>
+        <div class="tag-row"><span class="tag-row-label">Geography</span><span class="tag tag-geo">UK</span><span class="tag tag-geo">Global</span></div>
+      </div>
+      <a href="https://www.linkedin.com/search/results/people/?keywords=Rajat+Mittal" class="linkedin-link" target="_blank">🔗 View LinkedIn Profile →</a>
+    </div>
+
+
+    <div class="mentor-card qualified">
+      <div class="mentor-header-row">
+        <div class="mentor-rank rank-qual">6</div>
+        <div class="mentor-name-block">
+          <div class="mentor-name">Jihed Othmani</div>
+          <span class="mentor-tier-badge badge-qual">QUALIFIED</span>
+          <div class="mentor-location">📍 France</div>
+          <div style="margin-top:5px"><span style="background:#28a74522;color:#28a745;font-size:0.68rem;font-weight:700;padding:2px 9px;border-radius:10px;letter-spacing:0.5px">Product Development</span></div>
+        </div>
+        <div class="score-block">
+          <div class="dmf-score" style="color:#1a3a6b">7.9</div>
+          <div class="dmf-label">DMF Score</div>
+          <div class="score-bar-wrap"><div class="score-bar-bg"><div class="score-bar-fill" style="width:79%;background:linear-gradient(90deg,#1a3a6b,#1a3a6b99)"></div></div></div>
+          <div style="margin-top:6px;font-size:0.68rem;color:#94a3b8">Confidence: 6.5/10</div>
+        </div>
+      </div>
+      <div class="mentor-rationale">Co-founder and CTO of Expensya (expense management SaaS — directly adjacent to Saveria, sold 95% of the company). Deep expertise in fintech SaaS product and technology. Actively mentoring multiple startups. Same vertical (SMB finance automation) — ideal for product prioritization discussions.</div>
+      <div class="tags-area">
+        <div class="tag-row"><span class="tag-row-label">Sector</span><span class="tag tag-sector">FinTech</span><span class="tag tag-sector">SaaS</span><span class="tag tag-sector">Expense Management</span></div>
+        <div class="tag-row"><span class="tag-row-label">Skills</span><span class="tag tag-skill">Technical Product</span><span class="tag tag-skill">Founder</span><span class="tag tag-skill">Exit Experience</span></div>
+        <div class="tag-row"><span class="tag-row-label">Geography</span><span class="tag tag-geo">France</span></div>
+      </div>
+      <a href="https://www.linkedin.com/search/results/people/?keywords=Jihed+Othmani" class="linkedin-link" target="_blank">🔗 View LinkedIn Profile →</a>
+    </div>
+
+
+    <div class="mentor-card qualified">
+      <div class="mentor-header-row">
+        <div class="mentor-rank rank-qual">7</div>
+        <div class="mentor-name-block">
+          <div class="mentor-name">Christian Skytt</div>
+          <span class="mentor-tier-badge badge-qual">QUALIFIED</span>
+          <div class="mentor-location">📍 Denmark</div>
+          <div style="margin-top:5px"><span style="background:#fd7e1422;color:#fd7e14;font-size:0.68rem;font-weight:700;padding:2px 9px;border-radius:10px;letter-spacing:0.5px">Go-to-Market</span></div>
+        </div>
+        <div class="score-block">
+          <div class="dmf-score" style="color:#1a3a6b">7.8</div>
+          <div class="dmf-label">DMF Score</div>
+          <div class="score-bar-wrap"><div class="score-bar-bg"><div class="score-bar-fill" style="width:78%;background:linear-gradient(90deg,#1a3a6b,#1a3a6b99)"></div></div></div>
+          <div style="margin-top:6px;font-size:0.68rem;color:#94a3b8">Confidence: 8.5/10</div>
+        </div>
+      </div>
+      <div class="mentor-rationale">Explicitly lists verticals of interest: Financials, Public Markets, Fintech, GovTech, SalesTech (especially SaaS). Mentor at Copenhagen Fintech. Partner at Crescita Partners advising scale-ups. Strong B2B SaaS growth background.</div>
+      <div class="tags-area">
+        <div class="tag-row"><span class="tag-row-label">Sector</span><span class="tag tag-sector">FinTech</span><span class="tag tag-sector">B2B SaaS</span><span class="tag tag-sector">Financials</span></div>
+        <div class="tag-row"><span class="tag-row-label">Skills</span><span class="tag tag-skill">GTM</span><span class="tag tag-skill">Business Development</span><span class="tag tag-skill">Investor Readiness</span></div>
+        <div class="tag-row"><span class="tag-row-label">Geography</span><span class="tag tag-geo">Denmark</span><span class="tag tag-geo">Nordics</span></div>
+      </div>
+      <a href="https://www.linkedin.com/search/results/people/?keywords=Christian+Skytt" class="linkedin-link" target="_blank">🔗 View LinkedIn Profile →</a>
+    </div>
+
+
+    <div class="mentor-card qualified">
+      <div class="mentor-header-row">
+        <div class="mentor-rank rank-qual">8</div>
+        <div class="mentor-name-block">
+          <div class="mentor-name">Frédéric Jeannin</div>
+          <span class="mentor-tier-badge badge-qual">QUALIFIED</span>
+          <div class="mentor-location">📍 France</div>
+          <div style="margin-top:5px"><span style="background:#17a2b822;color:#17a2b8;font-size:0.68rem;font-weight:700;padding:2px 9px;border-radius:10px;letter-spacing:0.5px">Partnerships</span></div>
+        </div>
+        <div class="score-block">
+          <div class="dmf-score" style="color:#1a3a6b">7.6</div>
+          <div class="dmf-label">DMF Score</div>
+          <div class="score-bar-wrap"><div class="score-bar-bg"><div class="score-bar-fill" style="width:76%;background:linear-gradient(90deg,#1a3a6b,#1a3a6b99)"></div></div></div>
+          <div style="margin-top:6px;font-size:0.68rem;color:#94a3b8">Confidence: 7.0/10</div>
+        </div>
+      </div>
+      <div class="mentor-rationale">Onboarded by Inovexus as 'mentor fintech 360° relativement mature'. Built Lektra (automation, IPO'd). 8 years at Atos, helped Crédit Agricole, invested in Monext. Mature fintech ecosystem profile — useful for BD with French banking partners.</div>
+      <div class="tags-area">
+        <div class="tag-row"><span class="tag-row-label">Sector</span><span class="tag tag-sector">FinTech</span><span class="tag tag-sector">Payments</span></div>
+        <div class="tag-row"><span class="tag-row-label">Skills</span><span class="tag tag-skill">Partnerships</span><span class="tag tag-skill">Ecosystem</span><span class="tag tag-skill">BD</span></div>
+        <div class="tag-row"><span class="tag-row-label">Geography</span><span class="tag tag-geo">France</span></div>
+      </div>
+      <a href="https://www.linkedin.com/search/results/people/?keywords=Frédéric+Jeannin" class="linkedin-link" target="_blank">🔗 View LinkedIn Profile →</a>
+    </div>
+
+
+    <div class="mentor-card qualified">
+      <div class="mentor-header-row">
+        <div class="mentor-rank rank-qual">9</div>
+        <div class="mentor-name-block">
+          <div class="mentor-name">Marc Karako</div>
+          <span class="mentor-tier-badge badge-qual">QUALIFIED</span>
+          <div class="mentor-location">📍 France</div>
+          <div style="margin-top:5px"><span style="background:#20c99722;color:#20c997;font-size:0.68rem;font-weight:700;padding:2px 9px;border-radius:10px;letter-spacing:0.5px">Finance Structuration</span></div>
+        </div>
+        <div class="score-block">
+          <div class="dmf-score" style="color:#1a3a6b">7.5</div>
+          <div class="dmf-label">DMF Score</div>
+          <div class="score-bar-wrap"><div class="score-bar-bg"><div class="score-bar-fill" style="width:75%;background:linear-gradient(90deg,#1a3a6b,#1a3a6b99)"></div></div></div>
+          <div style="margin-top:6px;font-size:0.68rem;color:#94a3b8">Confidence: 7.0/10</div>
+        </div>
+      </div>
+      <div class="mentor-rationale">Ex-CFO of a CAC 40 company. Senior Advisor in private equity and finance professor at top French schools. Onboarded by Inovexus as Mentor and LeadMentor for Fintechs. Highly relevant for finance structuration and institutional investor relations ahead of Saveria's seed follow-on.</div>
+      <div class="tags-area">
+        <div class="tag-row"><span class="tag-row-label">Sector</span><span class="tag tag-sector">FinTech</span><span class="tag tag-sector">Finance</span></div>
+        <div class="tag-row"><span class="tag-row-label">Skills</span><span class="tag tag-skill">CFO</span><span class="tag tag-skill">Finance Structuration</span><span class="tag tag-skill">PE</span><span class="tag tag-skill">Board</span></div>
+        <div class="tag-row"><span class="tag-row-label">Geography</span><span class="tag tag-geo">France</span></div>
+      </div>
+      <a href="https://www.linkedin.com/search/results/people/?keywords=Marc+Karako" class="linkedin-link" target="_blank">🔗 View LinkedIn Profile →</a>
+    </div>
+
+
+    <div class="mentor-card qualified">
+      <div class="mentor-header-row">
+        <div class="mentor-rank rank-qual">10</div>
+        <div class="mentor-name-block">
+          <div class="mentor-name">Pascal Rivière</div>
+          <span class="mentor-tier-badge badge-qual">QUALIFIED</span>
+          <div class="mentor-location">📍 France</div>
+          <div style="margin-top:5px"><span style="background:#fd7e1422;color:#fd7e14;font-size:0.68rem;font-weight:700;padding:2px 9px;border-radius:10px;letter-spacing:0.5px">Go-to-Market</span></div>
+        </div>
+        <div class="score-block">
+          <div class="dmf-score" style="color:#1a3a6b">7.5</div>
+          <div class="dmf-label">DMF Score</div>
+          <div class="score-bar-wrap"><div class="score-bar-bg"><div class="score-bar-fill" style="width:75%;background:linear-gradient(90deg,#1a3a6b,#1a3a6b99)"></div></div></div>
+          <div style="margin-top:6px;font-size:0.68rem;color:#94a3b8">Confidence: 7.5/10</div>
+        </div>
+      </div>
+      <div class="mentor-rationale">Ex-DAF HP France (4k people), led HP-Compaq EMEA sales post-M&A, then HP Enterprise Director of Operations (CODIR). Internal note explicitly calls out 'Pricing et GTM validé' in his mentor profile. Mentor experience via HP startup programme and Insead BA club.</div>
+      <div class="tags-area">
+        <div class="tag-row"><span class="tag-row-label">Sector</span><span class="tag tag-sector">Enterprise Tech</span><span class="tag tag-sector">SaaS</span></div>
+        <div class="tag-row"><span class="tag-row-label">Skills</span><span class="tag tag-skill">Pricing</span><span class="tag tag-skill">GTM</span><span class="tag tag-skill">Operations</span><span class="tag tag-skill">Enterprise Sales</span></div>
+        <div class="tag-row"><span class="tag-row-label">Geography</span><span class="tag tag-geo">France</span><span class="tag tag-geo">EMEA</span></div>
+      </div>
+      <a href="https://www.linkedin.com/search/results/people/?keywords=Pascal+Rivière" class="linkedin-link" target="_blank">🔗 View LinkedIn Profile →</a>
+    </div>
+
+
+    <div class="mentor-card qualified">
+      <div class="mentor-header-row">
+        <div class="mentor-rank rank-qual">11</div>
+        <div class="mentor-name-block">
+          <div class="mentor-name">Antoine Carriere</div>
+          <span class="mentor-tier-badge badge-qual">QUALIFIED</span>
+          <div class="mentor-location">📍 Germany / France</div>
+          <div style="margin-top:5px"><span style="background:#6610f222;color:#6610f2;font-size:0.68rem;font-weight:700;padding:2px 9px;border-radius:10px;letter-spacing:0.5px">International Scaling</span></div>
+        </div>
+        <div class="score-block">
+          <div class="dmf-score" style="color:#1a3a6b">7.4</div>
+          <div class="dmf-label">DMF Score</div>
+          <div class="score-bar-wrap"><div class="score-bar-bg"><div class="score-bar-fill" style="width:74%;background:linear-gradient(90deg,#1a3a6b,#1a3a6b99)"></div></div></div>
+          <div style="margin-top:6px;font-size:0.68rem;color:#94a3b8">Confidence: 9.0/10</div>
+        </div>
+      </div>
+      <div class="mentor-rationale">Active Inovexus mentor for Mable (DACH B2B SaaS with 250+ customers). Explicitly 'worked at Google and managed operations for German and American companies'. Vertical of expertise: Agnostic/SaaS/B2B SaaS/B2C. Direct DACH market experience — highly relevant for Saveria's planned Germany expansion (DATEV integration).</div>
+      <div class="tags-area">
+        <div class="tag-row"><span class="tag-row-label">Sector</span><span class="tag tag-sector">B2B SaaS</span><span class="tag tag-sector">SaaS</span></div>
+        <div class="tag-row"><span class="tag-row-label">Skills</span><span class="tag tag-skill">International Expansion</span><span class="tag tag-skill">DACH Market</span><span class="tag tag-skill">Google Operations</span><span class="tag tag-skill">Partnerships</span></div>
+        <div class="tag-row"><span class="tag-row-label">Geography</span><span class="tag tag-geo">Germany</span><span class="tag tag-geo">France</span><span class="tag tag-geo">USA</span></div>
+      </div>
+      <a href="https://www.linkedin.com/search/results/people/?keywords=Antoine+Carriere" class="linkedin-link" target="_blank">🔗 View LinkedIn Profile →</a>
+    </div>
+
+
+    <div class="mentor-card qualified">
+      <div class="mentor-header-row">
+        <div class="mentor-rank rank-qual">12</div>
+        <div class="mentor-name-block">
+          <div class="mentor-name">Axel Jockwer</div>
+          <span class="mentor-tier-badge badge-qual">QUALIFIED</span>
+          <div class="mentor-location">📍 Germany</div>
+          <div style="margin-top:5px"><span style="background:#6610f222;color:#6610f2;font-size:0.68rem;font-weight:700;padding:2px 9px;border-radius:10px;letter-spacing:0.5px">International Scaling</span></div>
+        </div>
+        <div class="score-block">
+          <div class="dmf-score" style="color:#1a3a6b">7.3</div>
+          <div class="dmf-label">DMF Score</div>
+          <div class="score-bar-wrap"><div class="score-bar-bg"><div class="score-bar-fill" style="width:73%;background:linear-gradient(90deg,#1a3a6b,#1a3a6b99)"></div></div></div>
+          <div style="margin-top:6px;font-size:0.68rem;color:#94a3b8">Confidence: 7.0/10</div>
+        </div>
+      </div>
+      <div class="mentor-rationale">Scaled HolidayCheck from 5 to 350 employees in 7 years as Marketing Director (2005-2012). Ex-founder/scaler in Germany. SaaS/MarTech/E-Commerce focus. German-native operator — direct asset for Saveria's DACH expansion planning (positioning, local GTM).</div>
+      <div class="tags-area">
+        <div class="tag-row"><span class="tag-row-label">Sector</span><span class="tag tag-sector">SaaS</span><span class="tag tag-sector">MarTech</span><span class="tag tag-sector">E-Commerce</span></div>
+        <div class="tag-row"><span class="tag-row-label">Skills</span><span class="tag tag-skill">Scaling</span><span class="tag tag-skill">Growth</span><span class="tag tag-skill">German Market</span></div>
+        <div class="tag-row"><span class="tag-row-label">Geography</span><span class="tag tag-geo">Germany</span><span class="tag tag-geo">DACH</span></div>
+      </div>
+      <a href="https://www.linkedin.com/search/results/people/?keywords=Axel+Jockwer" class="linkedin-link" target="_blank">🔗 View LinkedIn Profile →</a>
+    </div>
+
+
+    <div class="mentor-card qualified">
+      <div class="mentor-header-row">
+        <div class="mentor-rank rank-qual">13</div>
+        <div class="mentor-name-block">
+          <div class="mentor-name">Laurence Lafont</div>
+          <span class="mentor-tier-badge badge-qual">QUALIFIED</span>
+          <div class="mentor-location">📍 France</div>
+          <div style="margin-top:5px"><span style="background:#dc354522;color:#dc3545;font-size:0.68rem;font-weight:700;padding:2px 9px;border-radius:10px;letter-spacing:0.5px">Direct Sales (Outbound)</span></div>
+        </div>
+        <div class="score-block">
+          <div class="dmf-score" style="color:#1a3a6b">7.2</div>
+          <div class="dmf-label">DMF Score</div>
+          <div class="score-bar-wrap"><div class="score-bar-bg"><div class="score-bar-fill" style="width:72%;background:linear-gradient(90deg,#1a3a6b,#1a3a6b99)"></div></div></div>
+          <div style="margin-top:6px;font-size:0.68rem;color:#94a3b8">Confidence: 9.0/10</div>
+        </div>
+      </div>
+      <div class="mentor-rationale">Former VP Strategic Industries EMEA at Google; COO France at Microsoft; ex-Oracle, Nokia. Exceptional C-suite sales leader. Independent board member at Vantiva. Will open senior-level doors at large French enterprises and help Saveria structure enterprise-sales playbook.</div>
+      <div class="tags-area">
+        <div class="tag-row"><span class="tag-row-label">Sector</span><span class="tag tag-sector">Enterprise Tech</span><span class="tag tag-sector">Cloud</span><span class="tag tag-sector">SaaS</span></div>
+        <div class="tag-row"><span class="tag-row-label">Skills</span><span class="tag tag-skill">Enterprise GTM</span><span class="tag tag-skill">EMEA</span><span class="tag tag-skill">C-Suite Sales</span><span class="tag tag-skill">Strategic Industries</span></div>
+        <div class="tag-row"><span class="tag-row-label">Geography</span><span class="tag tag-geo">France</span><span class="tag tag-geo">EMEA</span></div>
+      </div>
+      <a href="https://www.linkedin.com/search/results/people/?keywords=Laurence+Lafont" class="linkedin-link" target="_blank">🔗 View LinkedIn Profile →</a>
+    </div>
+
+
+    <div class="mentor-card qualified">
+      <div class="mentor-header-row">
+        <div class="mentor-rank rank-qual">14</div>
+        <div class="mentor-name-block">
+          <div class="mentor-name">Carlo Schupp</div>
+          <span class="mentor-tier-badge badge-qual">QUALIFIED</span>
+          <div class="mentor-location">📍 Belgium</div>
+          <div style="margin-top:5px"><span style="background:#28a74522;color:#28a745;font-size:0.68rem;font-weight:700;padding:2px 9px;border-radius:10px;letter-spacing:0.5px">Product Development</span></div>
+        </div>
+        <div class="score-block">
+          <div class="dmf-score" style="color:#1a3a6b">7.1</div>
+          <div class="dmf-label">DMF Score</div>
+          <div class="score-bar-wrap"><div class="score-bar-bg"><div class="score-bar-fill" style="width:71%;background:linear-gradient(90deg,#1a3a6b,#1a3a6b99)"></div></div></div>
+          <div style="margin-top:6px;font-size:0.68rem;color:#94a3b8">Confidence: 8.2/10</div>
+        </div>
+      </div>
+      <div class="mentor-rationale">EVP Strategy & Alliances and former CTO at TrustBuilder (SaaS platform). CEO of exited Guard (SaaS, exited to Thales). COO of WISeKey (IPO). Expertise in SaaS + AI + fintech. Deep PE/M&A readiness know-how for B2B SaaS.</div>
+      <div class="tags-area">
+        <div class="tag-row"><span class="tag-row-label">Sector</span><span class="tag tag-sector">SaaS</span><span class="tag tag-sector">AI</span><span class="tag tag-sector">FinTech</span></div>
+        <div class="tag-row"><span class="tag-row-label">Skills</span><span class="tag tag-skill">Product Management</span><span class="tag tag-skill">Exit Readiness</span><span class="tag tag-skill">Technical Product</span><span class="tag tag-skill">CEO</span></div>
+        <div class="tag-row"><span class="tag-row-label">Geography</span><span class="tag tag-geo">Belgium</span><span class="tag tag-geo">EU</span></div>
+      </div>
+      <a href="https://www.linkedin.com/search/results/people/?keywords=Carlo+Schupp" class="linkedin-link" target="_blank">🔗 View LinkedIn Profile →</a>
+    </div>
+
+
+    <div class="mentor-card qualified">
+      <div class="mentor-header-row">
+        <div class="mentor-rank rank-qual">15</div>
+        <div class="mentor-name-block">
+          <div class="mentor-name">Simon Shohet</div>
+          <span class="mentor-tier-badge badge-qual">QUALIFIED</span>
+          <div class="mentor-location">📍 France</div>
+          <div style="margin-top:5px"><span style="background:#20c99722;color:#20c997;font-size:0.68rem;font-weight:700;padding:2px 9px;border-radius:10px;letter-spacing:0.5px">Finance Structuration</span></div>
+        </div>
+        <div class="score-block">
+          <div class="dmf-score" style="color:#1a3a6b">7.1</div>
+          <div class="dmf-label">DMF Score</div>
+          <div class="score-bar-wrap"><div class="score-bar-bg"><div class="score-bar-fill" style="width:71%;background:linear-gradient(90deg,#1a3a6b,#1a3a6b99)"></div></div></div>
+          <div style="margin-top:6px;font-size:0.68rem;color:#94a3b8">Confidence: 7.5/10</div>
+        </div>
+      </div>
+      <div class="mentor-rationale">Works in strategic finance at Alma (French fintech, among first 30-40 employees). 5-6 years in Finance Consulting for Banks/IB/Fintech. 'Place des CFOs'. Direct fintech operational profile with fundraising fluency.</div>
+      <div class="tags-area">
+        <div class="tag-row"><span class="tag-row-label">Sector</span><span class="tag tag-sector">FinTech</span></div>
+        <div class="tag-row"><span class="tag-row-label">Skills</span><span class="tag tag-skill">Finance Strategy</span><span class="tag tag-skill">CFO Placement</span><span class="tag tag-skill">Fundraising</span></div>
+        <div class="tag-row"><span class="tag-row-label">Geography</span><span class="tag tag-geo">France</span></div>
+      </div>
+      <a href="https://www.linkedin.com/search/results/people/?keywords=Simon+Shohet" class="linkedin-link" target="_blank">🔗 View LinkedIn Profile →</a>
+    </div>
+
+
+    <div class="mentor-card qualified">
+      <div class="mentor-header-row">
+        <div class="mentor-rank rank-qual">16</div>
+        <div class="mentor-name-block">
+          <div class="mentor-name">Franck Laumon</div>
+          <span class="mentor-tier-badge badge-qual">QUALIFIED</span>
+          <div class="mentor-location">📍 France</div>
+          <div style="margin-top:5px"><span style="background:#20c99722;color:#20c997;font-size:0.68rem;font-weight:700;padding:2px 9px;border-radius:10px;letter-spacing:0.5px">Finance Structuration</span></div>
+        </div>
+        <div class="score-block">
+          <div class="dmf-score" style="color:#1a3a6b">7.0</div>
+          <div class="dmf-label">DMF Score</div>
+          <div class="score-bar-wrap"><div class="score-bar-bg"><div class="score-bar-fill" style="width:70%;background:linear-gradient(90deg,#1a3a6b,#1a3a6b99)"></div></div></div>
+          <div style="margin-top:6px;font-size:0.68rem;color:#94a3b8">Confidence: 6.5/10</div>
+        </div>
+      </div>
+      <div class="mentor-rationale">CFO part-time for PME/ETI, own mentoring structure. Created Dafinity. Audit + Transaction Services + DAF experience. Mentor at Dauphine for 8-9 years. Explicit 'partie comptable / fundraising' focus — relevant for SMB-facing accounting fintech.</div>
+      <div class="tags-area">
+        <div class="tag-row"><span class="tag-row-label">Sector</span><span class="tag tag-sector">SMB Finance</span><span class="tag tag-sector">Accounting</span><span class="tag tag-sector">Insurance Brokerage</span></div>
+        <div class="tag-row"><span class="tag-row-label">Skills</span><span class="tag tag-skill">CFO</span><span class="tag tag-skill">Fundraising</span><span class="tag tag-skill">Accounting Practice</span></div>
+        <div class="tag-row"><span class="tag-row-label">Geography</span><span class="tag tag-geo">France</span></div>
+      </div>
+      <a href="https://www.linkedin.com/search/results/people/?keywords=Franck+Laumon" class="linkedin-link" target="_blank">🔗 View LinkedIn Profile →</a>
+    </div>
+
+
+    <div class="mentor-card qualified">
+      <div class="mentor-header-row">
+        <div class="mentor-rank rank-qual">17</div>
+        <div class="mentor-name-block">
+          <div class="mentor-name">Octavio Soler Bach</div>
+          <span class="mentor-tier-badge badge-qual">QUALIFIED</span>
+          <div class="mentor-location">📍 Spain</div>
+          <div style="margin-top:5px"><span style="background:#17a2b822;color:#17a2b8;font-size:0.68rem;font-weight:700;padding:2px 9px;border-radius:10px;letter-spacing:0.5px">Partnerships</span></div>
+        </div>
+        <div class="score-block">
+          <div class="dmf-score" style="color:#1a3a6b">7.0</div>
+          <div class="dmf-label">DMF Score</div>
+          <div class="score-bar-wrap"><div class="score-bar-bg"><div class="score-bar-fill" style="width:70%;background:linear-gradient(90deg,#1a3a6b,#1a3a6b99)"></div></div></div>
+          <div style="margin-top:6px;font-size:0.68rem;color:#94a3b8">Confidence: 5.5/10</div>
+        </div>
+      </div>
+      <div class="mentor-rationale">CEO / Board member experience in FinTech and companies undergoing digital transformation. Investor and founder of various FinTech ventures. Senior Spanish profile bringing fintech ecosystem access.</div>
+      <div class="tags-area">
+        <div class="tag-row"><span class="tag-row-label">Sector</span><span class="tag tag-sector">FinTech</span><span class="tag tag-sector">Digital Transformation</span></div>
+        <div class="tag-row"><span class="tag-row-label">Skills</span><span class="tag tag-skill">Board</span><span class="tag tag-skill">CEO</span><span class="tag tag-skill">Ecosystem</span></div>
+        <div class="tag-row"><span class="tag-row-label">Geography</span><span class="tag tag-geo">Spain</span></div>
+      </div>
+      <a href="https://www.linkedin.com/search/results/people/?keywords=Octavio+Soler+Bach" class="linkedin-link" target="_blank">🔗 View LinkedIn Profile →</a>
+    </div>
+
+
+    <div class="mentor-card qualified">
+      <div class="mentor-header-row">
+        <div class="mentor-rank rank-qual">18</div>
+        <div class="mentor-name-block">
+          <div class="mentor-name">José Cobián</div>
+          <span class="mentor-tier-badge badge-qual">QUALIFIED</span>
+          <div class="mentor-location">📍 Spain</div>
+          <div style="margin-top:5px"><span style="background:#fd7e1422;color:#fd7e14;font-size:0.68rem;font-weight:700;padding:2px 9px;border-radius:10px;letter-spacing:0.5px">Go-to-Market</span></div>
+        </div>
+        <div class="score-block">
+          <div class="dmf-score" style="color:#1a3a6b">7.0</div>
+          <div class="dmf-label">DMF Score</div>
+          <div class="score-bar-wrap"><div class="score-bar-bg"><div class="score-bar-fill" style="width:70%;background:linear-gradient(90deg,#1a3a6b,#1a3a6b99)"></div></div></div>
+          <div style="margin-top:6px;font-size:0.68rem;color:#94a3b8">Confidence: 7.5/10</div>
+        </div>
+      </div>
+      <div class="mentor-rationale">20 years consulting (Monitor Group/Deloitte, Oliver Wyman). Runs own accelerator invested in 13 companies. At board of FinTech Circle. B2B / B2B2C / AI / Marketplaces thesis. 9-startup portfolio (Tracksters). Fintech ecosystem veteran.</div>
+      <div class="tags-area">
+        <div class="tag-row"><span class="tag-row-label">Sector</span><span class="tag tag-sector">FinTech</span><span class="tag tag-sector">B2B</span><span class="tag tag-sector">AI</span></div>
+        <div class="tag-row"><span class="tag-row-label">Skills</span><span class="tag tag-skill">Consulting</span><span class="tag tag-skill">Accelerator</span><span class="tag tag-skill">Ecosystem</span></div>
+        <div class="tag-row"><span class="tag-row-label">Geography</span><span class="tag tag-geo">Spain</span><span class="tag tag-geo">UK</span></div>
+      </div>
+      <a href="https://www.linkedin.com/search/results/people/?keywords=José+Cobián" class="linkedin-link" target="_blank">🔗 View LinkedIn Profile →</a>
+    </div>
+
+  </div>
+</section>
+
+<!-- DASHBOARD -->
+<section id="dashboard" class="dashboard-section">
+  <div class="section-header">
+    <div class="section-icon icon-orange">📊</div>
+    <div><div class="section-title">Visual Dashboard</div><div class="section-subtitle">Mentor pool analytics · Score distributions · Geographic and sector coverage · Global confidence benchmark</div></div>
+  </div>
+
+  <div class="charts-grid">
+    <div class="chart-card">
+      <div class="chart-title">📊 DMF Score Distribution</div>
+      <canvas id="scoreDistChart"></canvas>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">📈 Confidence Level Distribution</div>
+      <canvas id="confDistChart"></canvas>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">🌍 Geographic Distribution</div>
+      <canvas id="geoChart"></canvas>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">🏭 Sector Expertise Distribution</div>
+      <canvas id="sectorChart"></canvas>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">🔧 Mentoring Skill Distribution</div>
+      <canvas id="skillChart"></canvas>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">🎯 Mentoring Area Allocation</div>
+      <canvas id="areaChart"></canvas>
+    </div>
+    <div class="chart-card chart-wide">
+      <div class="chart-title">🏆 Global Confidence Score — Inovexus Historical Benchmark</div>
+      <canvas id="benchmarkChart" style="max-height:280px"></canvas>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-brand">Inovexus</div>
+  <div class="footer-info">Saveria Mentor Matching Report · 13 Top + 18 Qualified Mentors · Global Confidence: 78/100 · April 2026 · Confidential — Investment Committee Use Only</div>
+</footer>
+
+</div>
+
+<script>
+Chart.defaults.font.family = "'Segoe UI', sans-serif";
+Chart.defaults.color = '#64748b';
+
+// 1. Score Distribution
+new Chart(document.getElementById('scoreDistChart'), {
+  type: 'bar',
+  data: {
+    labels: ['7.0-7.4', '7.5-7.9', '8.0-8.4', '8.5-8.9', '9.0+'],
+    datasets: [{
+      label: 'Mentors',
+      data: [8, 6, 4, 9, 4],
+      backgroundColor: ['rgba(42,99,190,0.7)','rgba(22,163,74,0.7)','rgba(234,88,12,0.7)','rgba(41,182,246,0.7)','rgba(220,38,38,0.7)'],
+      borderRadius: 6
+    }]
+  },
+  options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => ` ${c.raw} mentors` } } }, scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } }, x: { grid: { display: false } } } }
+});
+
+// 2. Confidence distribution
+new Chart(document.getElementById('confDistChart'), {
+  type: 'bar',
+  data: {
+    labels: ['Very High (9.0+)', 'High (8.0-8.9)', 'Medium (<8.0)'],
+    datasets: [{
+      label: 'Mentors',
+      data: [8, 10, 13],
+      backgroundColor: ['rgba(220,38,38,0.75)','rgba(41,182,246,0.75)','rgba(22,163,74,0.75)'],
+      borderRadius: 6
+    }]
+  },
+  options: { indexAxis: 'y', responsive: true, maintainAspectRatio: true, plugins: { legend: { display: false } }, scales: { x: { beginAtZero: true, ticks: { stepSize: 1 } }, y: { grid: { display: false } } } }
+});
+
+// 3. Geographic
+new Chart(document.getElementById('geoChart'), {
+  type: 'doughnut',
+  data: {
+    labels: ["France", "DACH / Switzerland", "Rest of Europe", "UK"],
+    datasets: [{
+      data: [16, 4, 10, 1],
+      backgroundColor: ['rgba(41,182,246,0.85)','rgba(234,88,12,0.85)','rgba(22,163,74,0.85)','rgba(139,92,246,0.85)','rgba(220,38,38,0.85)','rgba(253,126,20,0.85)','rgba(100,116,139,0.85)'],
+      borderWidth: 2,
+      borderColor: '#fff'
+    }]
+  },
+  options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { position: 'bottom', labels: { font: { size: 11 } } } } }
+});
+
+// 4. Sector
+new Chart(document.getElementById('sectorChart'), {
+  type: 'bar',
+  data: {
+    labels: ["FinTech", "B2B SaaS", "SaaS", "Banking", "AI", "Payments", "RegTech", "HRTech", "Finance", "Enterprise Tech"],
+    datasets: [{
+      label: 'Mentors',
+      data: [21, 8, 8, 3, 3, 3, 2, 2, 2, 2],
+      backgroundColor: 'rgba(15,27,45,0.75)',
+      borderRadius: 5
+    }]
+  },
+  options: { indexAxis: 'y', responsive: true, maintainAspectRatio: true, plugins: { legend: { display: false } }, scales: { x: { beginAtZero: true, ticks: { stepSize: 1 } }, y: { grid: { display: false }, ticks: { font: { size: 10 } } } } }
+});
+
+// 5. Skill
+new Chart(document.getElementById('skillChart'), {
+  type: 'bar',
+  data: {
+    labels: ["Other Specialist", "Finance / Fundraising", "Partnerships / BD", "GTM", "Sales / Enterprise", "HR / Scaling", "Product / PMF", "Executive / Board"],
+    datasets: [{
+      label: 'Mentions',
+      data: [37, 17, 10, 10, 9, 7, 7, 6],
+      backgroundColor: ['rgba(232,62,140,0.75)','rgba(253,126,20,0.75)','rgba(102,16,242,0.75)','rgba(32,201,151,0.75)','rgba(255,193,7,0.75)','rgba(23,162,184,0.75)','rgba(40,167,69,0.75)','rgba(99,132,0,0.75)'],
+      borderRadius: 5
+    }]
+  },
+  options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } }, x: { grid: { display: false }, ticks: { font: { size: 10 }, maxRotation: 30 } } } }
+});
+
+// 6. Mentoring Area Allocation
+new Chart(document.getElementById('areaChart'), {
+  type: 'pie',
+  data: {
+    labels: ["Direct Sales (Outbound)", "Go-to-Market", "Partnerships", "Product Development", "Pricing Strategy", "HR & Talent", "Finance Structuration", "International Scaling"],
+    datasets: [{
+      data: [3, 8, 5, 4, 2, 2, 5, 2],
+      backgroundColor: ["#dc3545", "#fd7e14", "#17a2b8", "#28a745", "#e83e8c", "#6c757d", "#20c997", "#6610f2"],
+      borderWidth: 2,
+      borderColor: '#fff'
+    }]
+  },
+  options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { position: 'bottom', labels: { font: { size: 10 } } } } }
+});
+
+// 7. Benchmark Chart
+const benchmarkData = [
+  { name: 'Pilea', score: 9.5, current: false },
+  { name: 'Flumes', score: 8.8, current: false },
+  { name: 'Lemrock', score: 8.5, current: false },
+  { name: 'OnSource', score: 8.5, current: false },
+  { name: 'Kinvault', score: 8.5, current: false },
+  { name: 'Owuba', score: 8.4, current: false },
+  { name: 'Lili For Life', score: 8.2, current: false },
+  { name: 'Intelligent Core', score: 8.2, current: false },
+  { name: '★ Saveria', score: 7.8, current: true },
+  { name: 'Nerva', score: 7.6, current: false },
+  { name: 'Blumana', score: 7.0, current: false },
+  { name: 'Glober AI', score: 6.9, current: false }
+];
+benchmarkData.sort((a,b) => b.score - a.score);
+
+new Chart(document.getElementById('benchmarkChart'), {
+  type: 'bar',
+  data: {
+    labels: benchmarkData.map(d => d.name),
+    datasets: [{
+      label: 'Global Confidence Score (0–10)',
+      data: benchmarkData.map(d => d.score),
+      backgroundColor: benchmarkData.map(d => d.current ? 'rgba(41,182,246,0.9)' : 'rgba(100,116,139,0.6)'),
+      borderColor: benchmarkData.map(d => d.current ? 'rgba(41,182,246,1)' : 'rgba(100,116,139,1)'),
+      borderWidth: 2,
+      borderRadius: 6
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: true,
+    plugins: {
+      legend: { display: false },
+      tooltip: { callbacks: { label: c => ` Score: ${c.raw.toFixed(1)} / 10` } }
+    },
+    scales: {
+      y: { min: 0, max: 10, ticks: { stepSize: 1 }, title: { display: true, text: 'Confidence Score (0–10)', font: { size: 11 } } },
+      x: { grid: { display: false }, ticks: { font: { size: 10 } } }
+    }
+  }
+});
+</script>
+</body>
+</html>
